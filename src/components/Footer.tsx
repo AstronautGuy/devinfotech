@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { TextScramble } from "@/components/TextScramble";
-import {usePathname} from "next/navigation";
+import { usePathname } from "next/navigation";
 
 // Social Media Icons for Footer
 const TwitterIcon = () => (
@@ -42,7 +42,6 @@ const DribbbleIcon = () => (
 );
 
 const Footer = () => {
-
   const pathname = usePathname();
 
   const isContactPage = pathname === "/contact";
@@ -155,8 +154,8 @@ const Footer = () => {
             Have a project in mind?
           </h2>
           <p className="text-gray-400 mb-8 max-w-2xl mx-auto">
-            Let&apos;s build something extraordinary together. Reach out and we&apos;ll
-            turn your vision into a stunning digital reality.
+            Let&apos;s build something extraordinary together. Reach out and
+            we&apos;ll turn your vision into a stunning digital reality.
           </p>
           <button className="group relative px-8 py-4 text-lg font-bold text-white bg-[var(--primary-accent)] rounded-xl overflow-hidden transition-all duration-300 hover:shadow-[0_0_20px_var(--primary-accent)] hover:scale-105">
             <span className="relative">Start a Project</span>

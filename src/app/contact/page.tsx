@@ -228,8 +228,8 @@ const ContactPage = () => {
             Get In Touch
           </h1>
           <p className="text-lg text-gray-400 mt-4 max-w-2xl mx-auto">
-            We&apos;re here to help and answer any question you might have. We look
-            forward to hearing from you.
+            We&apos;re here to help and answer any question you might have. We
+            look forward to hearing from you.
           </p>
         </div>
 
@@ -331,21 +331,22 @@ const ContactPage = () => {
               </div>
               <a href={"tel:9825039020"}>
                 <div className="flex items-center">
-                  <PhoneIcon/>
+                  <PhoneIcon />
                   <span>+91 98250 39020</span>
                 </div>
               </a>
               <a href={"tel:6351559189"}>
                 <div className="flex items-center">
-                  <PhoneIcon/>
+                  <PhoneIcon />
                   <span>+91 635155 9189</span>
                 </div>
               </a>
               <div className="flex items-start">
                 <LocationIcon />
                 <span>
-                  TF 63, Earth Eon, opp. Urmi School<br/> Over Bridge,
-                  New Sama, Vadodara,<br/> Gujarat 390008
+                  TF 63, Earth Eon, opp. Urmi School
+                  <br /> Over Bridge, New Sama, Vadodara,
+                  <br /> Gujarat 390008
                 </span>
               </div>
             </div>
