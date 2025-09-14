@@ -6,6 +6,7 @@ import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { TextScramble } from "@/components/TextScramble";
+import { usePathname } from "next/navigation";
 
 const menuItems = [
   { name: "Services", href: "/" },
@@ -126,7 +127,15 @@ const Header = () => {
 };
 
 const Logo = ({ className }: { className?: string }) => {
-  return <TextScramble className={"text-2xl"}>devinfotech</TextScramble>;
+  const pathname = usePathname();
+
+  const isContactPage = pathname === "/contact";
+
+  return (
+    <TextScramble className={`text-2xl ${isContactPage ? "text-white" : ""}`}>
+      devinfotech
+    </TextScramble>
+  );
 };
 
 export default Header;
