@@ -310,7 +310,7 @@ const ContactPage = () => {
                 <button
                   type="submit"
                   disabled={formStatus === "sending"}
-                  className="w-full py-3 text-lg font-bold text-white bg-[var(--primary-accent)] rounded-xl transition-all duration-300 hover:shadow-[0_0_20px_var(--primary-accent)] hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className=" bg-white/40 w-full py-3 text-lg font-bold text-black/70 rounded-xl transition-all duration-300 hover:shadow-[0_0_20px_var(--primary-accent)] hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {formStatus === "sending" ? "Sending..." : "Send Message"}
                 </button>
@@ -323,28 +323,36 @@ const ContactPage = () => {
               <div className="flex items-center">
                 <MailIcon />
                 <a
-                  href="mailto:contact@devinfotech.com"
+                  href="mailto:info@devinfotech.net"
                   className="hover:text-[var(--primary-accent)] transition-colors"
                 >
-                  contact@devinfotech.com
+                  info@devinfotech.net
                 </a>
               </div>
-              <div className="flex items-center">
-                <PhoneIcon />
-                <span>+91 12345 67890</span>
-              </div>
+              <a href={"tel:9825039020"}>
+                <div className="flex items-center">
+                  <PhoneIcon/>
+                  <span>+91 98250 39020</span>
+                </div>
+              </a>
+              <a href={"tel:6351559189"}>
+                <div className="flex items-center">
+                  <PhoneIcon/>
+                  <span>+91 635155 9189</span>
+                </div>
+              </a>
               <div className="flex items-start">
                 <LocationIcon />
                 <span>
-                  Manjalpur, Vadodara, <br />
-                  Gujarat 390011, India
+                  TF 63, Earth Eon, opp. Urmi School<br/> Over Bridge,
+                  New Sama, Vadodara,<br/> Gujarat 390008
                 </span>
               </div>
             </div>
 
             <div className="rounded-2xl overflow-hidden border border-white/10">
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d59085.6496464459!2d73.1558509424883!3d22.25868826798036!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395fc5a95b867c27%3A0x855423812d3128d5!2sManjalpur%2C%20Vadodara%2C%20Gujarat!5e0!3m2!1sen!2sin!4v1663156948554!5m2!1sen!2sin"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3690.344640743591!2d73.20148427586726!3d22.340612041431918!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395fcf29b911c9d1%3A0x8452f3f2f53bf791!2sDev%20Infotech!5e0!3m2!1sen!2sin!4v1757838840866!5m2!1sen!2sin"
                 width="100%"
                 height="250"
                 style={{ border: 0, filter: "invert(90%) hue-rotate(180deg)" }}

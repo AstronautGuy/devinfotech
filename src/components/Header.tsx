@@ -12,6 +12,7 @@ const menuItems = [
   { name: "Services", href: "/" },
   { name: "Shop", href: "#link" },
   { name: "About", href: "/about" },
+  { name: "Contact Us", href: "/contact" },
 ];
 
 const Header = () => {

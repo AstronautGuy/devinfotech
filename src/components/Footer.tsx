@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { TextScramble } from "@/components/TextScramble";
+import {usePathname} from "next/navigation";
 
 // Social Media Icons for Footer
 const TwitterIcon = () => (
@@ -41,6 +42,11 @@ const DribbbleIcon = () => (
 );
 
 const Footer = () => {
+
+  const pathname = usePathname();
+
+  const isContactPage = pathname === "/contact";
+
   // --- STATE MANAGEMENT ---
   const [currentTime, setCurrentTime] = useState("");
 
@@ -132,7 +138,7 @@ const Footer = () => {
       <style>{customStyles}</style>
       <footer
         ref={footerRef}
-        className="relative bg-[#121214] pt-20 overflow-hidden text-[#F0F0F0]"
+        className={`relative bg-[#121214] pt-20 overflow-hidden text-[#F0F0F0] ${isContactPage ? "hidden" : "block"}`}
       >
         {/* Background Blobs */}
         <div className="absolute top-0 left-0 w-full h-full opacity-30 z-0">
