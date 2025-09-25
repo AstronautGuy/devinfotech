@@ -5,6 +5,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { TextScramble } from "@/components/TextScramble";
 import { usePathname } from "next/navigation";
+import Link from "next/link";
 
 // Social Media Icons for Footer
 const TwitterIcon = () => (
@@ -157,9 +158,11 @@ const Footer = () => {
             Let&apos;s build something extraordinary together. Reach out and
             we&apos;ll turn your vision into a stunning digital reality.
           </p>
-          <button className="group relative px-8 py-4 text-lg font-bold text-white bg-[var(--primary-accent)] rounded-xl overflow-hidden transition-all duration-300 hover:shadow-[0_0_20px_var(--primary-accent)] hover:scale-105">
-            <span className="relative">Start a Project</span>
-          </button>
+          <Link href={"/contact"}>
+            <button className="group relative px-8 py-4 text-lg font-bold text-white bg-[var(--primary-accent)] rounded-xl overflow-hidden transition-all duration-300 hover:shadow-[0_0_20px_var(--primary-accent)] hover:scale-105">
+              <span className="relative">Start a Project</span>
+            </button>
+          </Link>
         </div>
 
         {/* Main Footer Content */}

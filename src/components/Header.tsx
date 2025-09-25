@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { TextScramble } from "@/components/TextScramble";
 import { usePathname } from "next/navigation";
+import { useCheckRole } from "@/hooks/checkRole";
 
 const menuItems = [
   { name: "Services", href: "/" },
@@ -18,6 +19,12 @@ const menuItems = [
 const Header = () => {
   const [menuState, setMenuState] = React.useState(false);
   const [isScrolled, setIsScrolled] = React.useState(false);
+
+  const { isLoggedIn, isAdmin } = useCheckRole();
+
+  const pathname = usePathname();
+
+  const isContactPage = pathname === "/contact";
 
   React.useEffect(() => {
     const handleScroll = () => {
@@ -65,7 +72,7 @@ const Header = () => {
                   <li key={index}>
                     <Link
                       href={item.href}
-                      className="text-muted-foreground hover:text-accent-foreground block duration-150"
+                      className={`text-muted-foreground block duration-150 ${isContactPage ? "hover:text-white" : "hover:text-accent-foreground"}`}
                     >
                       <span>{item.name}</span>
                     </Link>
@@ -81,7 +88,7 @@ const Header = () => {
                     <li key={index}>
                       <Link
                         href={item.href}
-                        className="text-muted-foreground hover:text-accent-foreground block duration-150"
+                        className={`text-muted-foreground block duration-150 ${isContactPage ? "hover:text-white" : "hover:text-accent-foreground"}`}
                       >
                         <span>{item.name}</span>
                       </Link>
@@ -90,32 +97,69 @@ const Header = () => {
                 </ul>
               </div>
               <div className="flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
+                {/* Login / Dashboard / Admin Panel */}
                 <Button
                   asChild
                   variant="outline"
                   size="sm"
                   className={cn(isScrolled && "lg:hidden")}
                 >
-                  <Link href="#">
-                    <span>Login</span>
+                  <Link
+                    href={
+                      isAdmin
+                        ? "/admin"
+                        : isLoggedIn
+                          ? "/dashboard"
+                          : "/auth/login"
+                    }
+                  >
+                    <span className="text-foreground">
+                      {isAdmin
+                        ? "Admin Panel"
+                        : isLoggedIn
+                          ? "Dashboard"
+                          : "Login"}
+                    </span>
                   </Link>
                 </Button>
+
+                {/* Sign Up / Logout */}
                 <Button
                   asChild
                   size="sm"
                   className={cn(isScrolled && "lg:hidden")}
                 >
-                  <Link href="#">
-                    <span>Sign Up</span>
+                  <Link
+                    href={
+                      isLoggedIn || isAdmin ? "/auth/logout" : "/auth/sign-up"
+                    }
+                  >
+                    <span>{isLoggedIn || isAdmin ? "Logout" : "Sign Up"}</span>
                   </Link>
                 </Button>
+
+                {/* Get Started / Dashboard / Admin Panel */}
                 <Button
                   asChild
                   size="sm"
                   className={cn(isScrolled ? "lg:inline-flex" : "hidden")}
                 >
-                  <Link href="#">
-                    <span>Get Started</span>
+                  <Link
+                    href={
+                      isAdmin
+                        ? "/admin"
+                        : isLoggedIn
+                          ? "/dashboard"
+                          : "/auth/sign-up"
+                    }
+                  >
+                    <span>
+                      {isAdmin
+                        ? "Admin Panel"
+                        : isLoggedIn
+                          ? "Dashboard"
+                          : "Get Started"}
+                    </span>
                   </Link>
                 </Button>
               </div>
