@@ -8,19 +8,19 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-enum Role {
-  USER
-  ADMIN
-}
-
-model Profile {
-  id         String   @id @default(uuid())
-  user_id    String   @unique
-  email      String?
-  full_name  String?
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-
-  @@index([user_id])
-  @@map("profiles")
-}
+//enum Role {
+//   USER
+//   ADMIN
+// }
+//
+// model Profile {
+//   id         String   @id @default(uuid())
+//   user_id    String   @unique
+//   email      String?
+//   full_name  String?
+//   created_at DateTime @default(now())
+//   updated_at DateTime @updatedAt
+//
+//   @@index([user_id])
+//   @@map("profiles")
+// }
