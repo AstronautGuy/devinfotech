@@ -10,6 +10,22 @@ import type { Product, ProductImage } from '@prisma/client';
 // Define a type for the product prop that includes its images
 type ProductWithImages = Product & { images: ProductImage[] };
 
+// Define the shape of validation errors
+type ProductErrors = {
+    name?: string[];
+    slug?: string[];
+    price?: string[];
+    images?: string[];
+    metaTitle?: string[];
+    metaDescription?: string[];
+};
+
+// Define the state returned by the server action
+type FormState = {
+    message: string;
+    errors: ProductErrors;
+};
+
 interface EditProductFormProps {
     product: ProductWithImages;
 }
@@ -29,23 +45,18 @@ function SubmitButton() {
 }
 
 export function EditProductForm({ product }: EditProductFormProps) {
-    const initialState = { message: null, errors: {} };
-    // @ts-ignore
-    const [state, dispatch] = useActionState(updateProduct, initialState);
+    const initialState: FormState = { message: "", errors: {} };
+    const [state, dispatch] = useActionState<FormState, FormData>(updateProduct, initialState);
 
     // Pre-populate the image URLs from the product data
     const [imageUrls, setImageUrls] = useState<string[]>(product.images.map(img => img.url));
 
-    const handleAddImage = () => {
-        setImageUrls([...imageUrls, '']);
-    };
-
+    const handleAddImage = () => setImageUrls([...imageUrls, '']);
     const handleImageChange = (index: number, value: string) => {
         const newImageUrls = [...imageUrls];
         newImageUrls[index] = value;
         setImageUrls(newImageUrls);
     };
-
     const handleRemoveImage = (index: number) => {
         setImageUrls(imageUrls.filter((_, i) => i !== index));
     };

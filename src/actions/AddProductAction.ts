@@ -1,12 +1,13 @@
 // app/admin/actions.ts
 'use server';
 
-import {revalidatePath} from 'next/cache';
-import {redirect} from 'next/navigation';
+import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
 import prismadb from '@/lib/prisma';
-import {z} from 'zod';
+import { z } from 'zod';
+import { Prisma } from '@prisma/client'; // ✅ for error narrowing
 
-// ... (schema definition remains the same)
+// ✅ Validation schema
 const productSchema = z.object({
     name: z.string().min(3, { message: 'Name must be at least 3 characters long.' }),
     slug: z.string().min(3, { message: 'Slug must be at least 3 characters long.' }),
@@ -16,8 +17,8 @@ const productSchema = z.object({
     metaDescription: z.string().optional(),
 });
 
-
 export async function createProduct(prevState: any, formData: FormData) {
+    // ✅ Step 1: Validate input
     const validatedFields = productSchema.safeParse({
         name: formData.get('name'),
         slug: formData.get('slug'),
@@ -37,15 +38,15 @@ export async function createProduct(prevState: any, formData: FormData) {
     const { name, slug, price, description, metaTitle, metaDescription } = validatedFields.data;
     const imageUrls = formData.getAll('images').map(String).filter(url => url.trim() !== "");
 
-    // highlight-start
-    // 1. Get and process the tags from the form
-    const tagsString = formData.get('tags') as string || '';
-    const tagNames = tagsString.split(',')       // Split by comma
-        .map(tag => tag.trim().toLowerCase()) // Trim whitespace and convert to lowercase
-        .filter(tag => tag !== '');      // Remove any empty tags
-    // highlight-end
+    // ✅ Step 2: Handle tags
+    const tagsString = (formData.get('tags') as string) || '';
+    const tagNames = tagsString
+        .split(',')
+        .map(tag => tag.trim().toLowerCase())
+        .filter(tag => tag !== '');
 
     try {
+        // ✅ Step 3: DB transaction
         await prismadb.$transaction(async (prisma) => {
             const product = await prisma.product.create({
                 data: {
@@ -55,35 +56,44 @@ export async function createProduct(prevState: any, formData: FormData) {
                     description,
                     metaTitle,
                     metaDescription,
-                    // highlight-start
-                    // 2. Connect to existing tags or create new ones
                     tags: {
                         connectOrCreate: tagNames.map(tagName => ({
                             where: { name: tagName },
                             create: { name: tagName },
                         })),
                     },
-                    // highlight-end
                 },
             });
 
             if (imageUrls.length > 0) {
                 await prisma.productImage.createMany({
                     data: imageUrls.map((url) => ({
-                        url: url,
+                        url,
                         productId: product.id,
                     })),
                 });
             }
         });
-    } catch (error) {
+    } catch (error: unknown) {
         console.error(error);
-        if (error.code === 'P2002' && error.meta?.target?.includes('slug')) {
-            return { message: 'This slug is already in use. Please choose another.', errors: { slug: ['Slug already exists.'] } };
+
+        // ✅ Narrow Prisma errors
+        if (error instanceof Prisma.PrismaClientKnownRequestError) {
+            if (error.code === 'P2002') {
+                const target = error.meta?.target as string[] | undefined;
+                if (target?.includes('slug')) {
+                    return {
+                        message: 'This slug is already in use. Please choose another.',
+                        errors: { slug: ['Slug already exists.'] },
+                    };
+                }
+            }
         }
+
         return { message: 'Database error: Failed to create product.', errors: {} };
     }
 
+    // ✅ Success flow
     revalidatePath('/products');
     redirect(`/products/${slug}`);
 }

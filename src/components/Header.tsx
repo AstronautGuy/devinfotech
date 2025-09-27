@@ -24,7 +24,7 @@ const Header = () => {
     const router = useRouter();
     const supabase = createClient();
 
-    const [user, setUser] = useState<any>(null);
+    const [setUser] = useState<any>(null);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [loading, setLoading] = useState(true);
 

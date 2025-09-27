@@ -1,12 +1,26 @@
 // app/admin/AddProductForm.tsx
 'use client';
 
-// highlight-start
 import { useActionState } from 'react';
 import { useFormStatus } from 'react-dom';
-// highlight-end
 import { createProduct } from '@/actions/AddProductAction';
 import { useState } from 'react';
+
+// Define the type for errors
+type ProductErrors = {
+    name?: string[];
+    slug?: string[];
+    price?: string[];
+    images?: string[];
+    metaTitle?: string[];
+    metaDescription?: string[];
+};
+
+// Define the shape of the state returned by the action
+type FormState = {
+    message: string;
+    errors: ProductErrors;
+};
 
 // A separate component for the submit button to use the useFormStatus hook
 function SubmitButton() {
@@ -23,26 +37,19 @@ function SubmitButton() {
 }
 
 export function AddProductForm() {
-    const initialState = { message: null, errors: {} };
-    // highlight-start
-    const [state, dispatch] = useActionState(createProduct, initialState);
-    // highlight-end
+    const initialState: FormState = { message: "", errors: {} };
+    const [state, dispatch] = useActionState<FormState, FormData>(createProduct, initialState);
     const [imageUrls, setImageUrls] = useState<string[]>(['']);
 
-    const handleAddImage = () => {
-        setImageUrls([...imageUrls, '']);
-    };
-
+    const handleAddImage = () => setImageUrls([...imageUrls, '']);
     const handleImageChange = (index: number, value: string) => {
         const newImageUrls = [...imageUrls];
         newImageUrls[index] = value;
         setImageUrls(newImageUrls);
     };
-
     const handleRemoveImage = (index: number) => {
         setImageUrls(imageUrls.filter((_, i) => i !== index));
     };
-
 
     return (
         <form action={dispatch} className="space-y-6 max-w-2xl mx-auto p-8 bg-white rounded-lg shadow-md">
@@ -73,7 +80,14 @@ export function AddProductForm() {
                 <h3 className="text-sm font-medium text-gray-700">Product Images</h3>
                 {imageUrls.map((url, index) => (
                     <div key={index} className="flex items-center gap-2">
-                        <input type="url" name="images" value={url} onChange={(e) => handleImageChange(index, e.target.value)} placeholder="https://..." className="flex-grow block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"/>
+                        <input
+                            type="url"
+                            name="images"
+                            value={url}
+                            onChange={(e) => handleImageChange(index, e.target.value)}
+                            placeholder="https://..."
+                            className="flex-grow block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                        />
                         <button type="button" onClick={() => handleRemoveImage(index)} className="text-red-500 hover:text-red-700">&times;</button>
                     </div>
                 ))}
