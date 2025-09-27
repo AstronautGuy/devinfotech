@@ -16,6 +16,7 @@ export function RichTextEditor({
                                    onChange,
                                }: RichTextEditorProps) {
     const editor = useEditor({
+        immediatelyRender: false,
         extensions: [
             // highlight-start
             StarterKit.configure({
