@@ -3,7 +3,6 @@
 
 import { revalidatePath } from "next/cache";
 import prismadb from "@/lib/prisma";
-import { notFound } from "next/navigation";
 
 export async function deleteProduct(productId: string) {
   try {

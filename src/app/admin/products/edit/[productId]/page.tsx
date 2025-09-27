@@ -8,7 +8,7 @@ import { EditProductForm } from "@/components/forms/EditProductForm";
 async function getProductById(productId: string) {
   const product = await prismadb.product.findUnique({
     where: { id: productId },
-    include: { images: true },
+    include: { images: true, tags: true },
   });
 
   if (!product) {

@@ -1,0 +1,26 @@
+give this the the best seo you can
+
+
+import { HeroSection } from "@/components/HeroSection";
+import { WelcomeSection } from "@/components/WelcomeSection";
+import { CompanyStats } from "@/components/Stats";
+
+export default function Home() {
+  return (
+    <main>
+      <HeroSection />
+      <WelcomeSection />
+      <CompanyStats />
+    </main>
+  );
+}
+
+
+
+keep everything intact just enhance SEO and add json and whatever else you want description is in rich text hting give me full code the domain is devinfotech.net email is info@devinfotech.net and this is a dynamic product page so no fix product name or band just confirm that the meta seo keywords are imported from the db acc to the product name right?
+
+
+give it more than 500 keywords ill count and even id there is one less ill be killed so please be carefull
+
+we deal in
+laptops desktops computes cctvs repairign ferul tubes ferul printers lable printers lables computer accessories of all brands so add brandeed keywords too also we provide cloud storage antiviruses and maaaannyyy other things related to computers so add tags other than the above provided list too

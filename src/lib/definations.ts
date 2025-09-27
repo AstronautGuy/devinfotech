@@ -5,6 +5,7 @@ export type ProductErrors = {
   name?: string[];
   productId?: string[];
   slug?: string[];
+  brand?: string[];
   price?: string[];
   images?: string[];
   metaTitle?: string[];

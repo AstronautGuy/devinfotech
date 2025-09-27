@@ -26,6 +26,7 @@ const Header = () => {
   const supabase = createClient();
 
   const [user, setUser] = useState<User | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -43,6 +44,15 @@ const Header = () => {
     };
 
     fetchUser();
+
+    const checkAdmin = async () => {
+      const { data, error } = await supabase.auth.getClaims();
+      if (error || !data?.claims || data.claims.app_metadata?.role == "ADMIN") {
+        setIsAdmin(true);
+      }
+    };
+
+    checkAdmin();
 
     // Listen for auth state changes
     const { data: subscription } = supabase.auth.onAuthStateChange(
@@ -72,7 +82,7 @@ const Header = () => {
   const isContactPage = pathname === "/contact";
 
   return (
-    <main>
+    <main className="relative z-999">
       <nav
         className="fixed z-20 w-full px-2 group"
         data-state={menuState && "active"}
@@ -137,9 +147,21 @@ const Header = () => {
                   {loading ? (
                     <span>Loading...</span>
                   ) : (
-                    <Link href={isLoggedIn ? "/dashboard" : "/auth/login"}>
-                      <span className="text-foreground">
-                        {isLoggedIn ? "Dashboard" : "Login"}
+                    <Link
+                      href={
+                        isLoggedIn
+                          ? isAdmin
+                            ? "/admin"
+                            : "/dashboard"
+                          : "/auth/sign-up"
+                      }
+                    >
+                      <span>
+                        {isLoggedIn
+                          ? isAdmin
+                            ? "Admin Panel"
+                            : "Dashboard"
+                          : "Get Started"}
                       </span>
                     </Link>
                   )}
@@ -171,8 +193,22 @@ const Header = () => {
                   {loading ? (
                     <span>...</span>
                   ) : (
-                    <Link href={isLoggedIn ? "/dashboard" : "/auth/sign-up"}>
-                      <span>{isLoggedIn ? "Dashboard" : "Get Started"}</span>
+                    <Link
+                      href={
+                        isLoggedIn
+                          ? isAdmin
+                            ? "/admin"
+                            : "/dashboard"
+                          : "/auth/sign-up"
+                      }
+                    >
+                      <span>
+                        {isLoggedIn
+                          ? isAdmin
+                            ? "Admin Panel"
+                            : "Dashboard"
+                          : "Get Started"}
+                      </span>
                     </Link>
                   )}
                 </Button>
