@@ -1,12 +1,12 @@
 // app/admin/actions.ts
 'use server';
 
-import { revalidatePath } from 'next/cache';
-import { redirect } from 'next/navigation';
+import {revalidatePath} from 'next/cache';
+import {redirect} from 'next/navigation';
 import prismadb from '@/lib/prisma';
-import { z } from 'zod';
+import {z} from 'zod';
 
-// Define a schema for validation using Zod
+// ... (schema definition remains the same)
 const productSchema = z.object({
     name: z.string().min(3, { message: 'Name must be at least 3 characters long.' }),
     slug: z.string().min(3, { message: 'Slug must be at least 3 characters long.' }),
@@ -14,8 +14,8 @@ const productSchema = z.object({
     description: z.string().optional(),
     metaTitle: z.string().optional(),
     metaDescription: z.string().optional(),
-    // For images, we'll handle an array of strings
 });
+
 
 export async function createProduct(prevState: any, formData: FormData) {
     const validatedFields = productSchema.safeParse({
@@ -27,7 +27,6 @@ export async function createProduct(prevState: any, formData: FormData) {
         metaDescription: formData.get('metaDescription'),
     });
 
-    // If validation fails, return errors
     if (!validatedFields.success) {
         return {
             message: 'Failed to create product.',
@@ -36,12 +35,17 @@ export async function createProduct(prevState: any, formData: FormData) {
     }
 
     const { name, slug, price, description, metaTitle, metaDescription } = validatedFields.data;
-
-    // Get all image URLs from the form
     const imageUrls = formData.getAll('images').map(String).filter(url => url.trim() !== "");
 
+    // highlight-start
+    // 1. Get and process the tags from the form
+    const tagsString = formData.get('tags') as string || '';
+    const tagNames = tagsString.split(',')       // Split by comma
+        .map(tag => tag.trim().toLowerCase()) // Trim whitespace and convert to lowercase
+        .filter(tag => tag !== '');      // Remove any empty tags
+    // highlight-end
+
     try {
-        // Use a transaction to ensure both product and images are created, or neither are.
         await prismadb.$transaction(async (prisma) => {
             const product = await prisma.product.create({
                 data: {
@@ -51,6 +55,15 @@ export async function createProduct(prevState: any, formData: FormData) {
                     description,
                     metaTitle,
                     metaDescription,
+                    // highlight-start
+                    // 2. Connect to existing tags or create new ones
+                    tags: {
+                        connectOrCreate: tagNames.map(tagName => ({
+                            where: { name: tagName },
+                            create: { name: tagName },
+                        })),
+                    },
+                    // highlight-end
                 },
             });
 
@@ -65,15 +78,12 @@ export async function createProduct(prevState: any, formData: FormData) {
         });
     } catch (error) {
         console.error(error);
-        // Check for unique constraint violation on the slug
         if (error.code === 'P2002' && error.meta?.target?.includes('slug')) {
             return { message: 'This slug is already in use. Please choose another.', errors: { slug: ['Slug already exists.'] } };
         }
         return { message: 'Database error: Failed to create product.', errors: {} };
     }
 
-    // Revalidate the products page to show the new product
     revalidatePath('/products');
-    // Redirect to the new product's page after creation
     redirect(`/products/${slug}`);
 }
