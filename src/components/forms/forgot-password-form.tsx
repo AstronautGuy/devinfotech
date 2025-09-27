@@ -2,16 +2,16 @@
 
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase/client";
-import { Button } from "./ui/ui/button";
+import { Button } from "../ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "./ui/ui/card";
-import { Input } from "./ui/ui/input";
-import { Label } from "./ui/ui/label";
+} from "../ui/card";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
 import Link from "next/link";
 import { useState } from "react";
 

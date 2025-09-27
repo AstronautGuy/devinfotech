@@ -11,7 +11,7 @@ import { createClient } from "@/lib/supabase/client";
 
 const menuItems = [
     { name: "Services", href: "/" },
-    { name: "Shop", href: "#link" },
+    { name: "Shop", href: "/products" },
     { name: "About", href: "/about" },
     { name: "Contact Us", href: "/contact" },
 ];
