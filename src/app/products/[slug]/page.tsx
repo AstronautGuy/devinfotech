@@ -66,7 +66,7 @@ export default async function ProductPage(
             {product.name}
           </h1>
           <p className="text-2xl font-semibold text-gray-700 mb-6">
-            ${product.price.toFixed(2)}
+              ₹{product.price.toFixed(2)}
           </p>
           <p className="text-gray-600 leading-relaxed">{product.description}</p>
           <button className="mt-8 bg-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors">
