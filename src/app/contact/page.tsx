@@ -1,372 +1,192 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
-import { gsap } from "gsap";
-import * as THREE from "three";
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import { Mail, Phone, MapPin, Send, CheckCircle2 } from "lucide-react";
 
-// SVG Icon components for details section
-const MailIcon = () => (
-  <svg
-    className="w-6 h-6 mr-4 text-[var(--primary-accent)]"
-    fill="none"
-    stroke="currentColor"
-    viewBox="0 0 24 24"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="2"
-      d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-    ></path>
-  </svg>
-);
-const PhoneIcon = () => (
-  <svg
-    className="w-6 h-6 mr-4 text-[var(--primary-accent)]"
-    fill="none"
-    stroke="currentColor"
-    viewBox="0 0 24 24"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="2"
-      d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
-    ></path>
-  </svg>
-);
-const LocationIcon = () => (
-  <svg
-    className="w-6 h-6 mr-4 text-[var(--primary-accent)]"
-    fill="none"
-    stroke="currentColor"
-    viewBox="0 0 24 24"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="2"
-      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-    ></path>
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="2"
-      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-    ></path>
-  </svg>
-);
+export default function ContactPage() {
+  const [formStatus, setFormStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
 
-const ContactPage = () => {
-  // --- STATE MANAGEMENT ---
-  const [formStatus, setFormStatus] = useState<
-    "idle" | "sending" | "success" | "error"
-  >("idle");
-
-  // --- REFS FOR ANIMATION & 3D CANVAS ---
-  const pageRef = useRef<HTMLDivElement>(null);
-  const globeContainerRef = useRef<HTMLDivElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
-  const formRef = useRef<HTMLFormElement>(null);
-  const detailsRef = useRef<HTMLDivElement>(null);
-
-  // --- REALISTIC & INTEGRATED GLOBE ---
-  useEffect(() => {
-    if (!globeContainerRef.current) return;
-
-    const mouse = { x: 0, y: 0 };
-
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(
-      75,
-      window.innerWidth / window.innerHeight,
-      0.1,
-      1000,
-    );
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(window.devicePixelRatio);
-    globeContainerRef.current.appendChild(renderer.domElement);
-
-    camera.position.z = 2.5;
-
-    // Add lighting
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
-    scene.add(ambientLight);
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-    directionalLight.position.set(5, 3, 5);
-    scene.add(directionalLight);
-
-    // Earth
-    const textureLoader = new THREE.TextureLoader();
-    const earthTexture = textureLoader.load("./textures/earth_lights_2048.png");
-    const earthGeometry = new THREE.SphereGeometry(1.2, 2048, 2048);
-    const earthMaterial = new THREE.MeshPhongMaterial({ map: earthTexture });
-    const earth = new THREE.Mesh(earthGeometry, earthMaterial);
-    scene.add(earth);
-
-    // Clouds
-    const cloudTexture = textureLoader.load("./textures/earth_clouds_1024.png");
-    const cloudGeometry = new THREE.SphereGeometry(1.22, 1024, 1024);
-    const cloudMaterial = new THREE.MeshLambertMaterial({
-      map: cloudTexture,
-      transparent: true,
-      opacity: 0.7,
-    });
-    const clouds = new THREE.Mesh(cloudGeometry, cloudMaterial);
-    scene.add(clouds);
-
-    // Starfield
-    const starGeometry = new THREE.BufferGeometry();
-    const starVertices = [];
-    for (let i = 0; i < 10000; i++) {
-      const x = (Math.random() - 0.5) * 2000;
-      const y = (Math.random() - 0.5) * 2000;
-      const z = -Math.random() * 2000;
-      starVertices.push(x, y, z);
-    }
-    starGeometry.setAttribute(
-      "position",
-      new THREE.Float32BufferAttribute(starVertices, 3),
-    );
-    const starMaterial = new THREE.PointsMaterial({
-      color: 0xffffff,
-      size: 0.7,
-    });
-    const stars = new THREE.Points(starGeometry, starMaterial);
-    scene.add(stars);
-
-    const handleMouseMove = (event: MouseEvent) => {
-      mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-      mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-    };
-    window.addEventListener("mousemove", handleMouseMove);
-
-    const handleResize = () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-    };
-    window.addEventListener("resize", handleResize);
-
-    const animate = () => {
-      requestAnimationFrame(animate);
-      earth.rotation.y += 0.0005;
-      clouds.rotation.y += 0.0006;
-      stars.rotation.y += 0.0001;
-
-      camera.position.x += (mouse.x * 0.5 - camera.position.x) * 0.02;
-      camera.position.y += (mouse.y * 0.5 - camera.position.y) * 0.02;
-      camera.lookAt(scene.position);
-
-      renderer.render(scene, camera);
-    };
-    animate();
-
-    // Cleanup
-    return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("resize", handleResize);
-      if (globeContainerRef.current) {
-        globeContainerRef.current.removeChild(renderer.domElement);
-      }
-    };
-  }, []);
-
-  // --- PAGE LOAD ANIMATIONS ---
-  useEffect(() => {
-    if (!pageRef.current) return;
-
-    const tl = gsap.timeline({ delay: 0.3 });
-    tl.fromTo(
-      titleRef.current,
-      { y: 50, opacity: 0 },
-      { y: 0, opacity: 1, duration: 1, ease: "power3.out" },
-    )
-      .fromTo(
-        formRef.current,
-        { x: -50, opacity: 0 },
-        { x: 0, opacity: 1, duration: 1, ease: "power3.out" },
-        "-=0.7",
-      )
-      .fromTo(
-        detailsRef.current,
-        { x: 50, opacity: 0 },
-        { x: 0, opacity: 1, duration: 1, ease: "power3.out" },
-        "-=1",
-      );
-  }, []);
-
-  // --- FORM SUBMISSION HANDLER ---
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setFormStatus("sending");
-    // Simulate API call
     setTimeout(() => {
       setFormStatus("success");
-      setTimeout(() => setFormStatus("idle"), 5000); // Reset after 5 seconds
+      setTimeout(() => setFormStatus("idle"), 5000);
     }, 2000);
   };
 
   return (
-    <div
-      ref={pageRef}
-      className="bg-black/90 text-[#F0F0F0] min-h-screen relative overflow-hidden"
-    >
-      <div
-        ref={globeContainerRef}
-        className="absolute top-0 left-0 w-full h-full z-0"
-      ></div>
+    <div className="bg-slate-50 text-slate-900 min-h-screen relative overflow-hidden flex items-center justify-center py-28">
+      {/* Dynamic Floating Background Particles */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-[var(--primary-accent)]/10 blur-[120px] animate-pulse"></div>
+        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-blue-500/10 blur-[120px] animate-pulse delay-1000"></div>
+      </div>
 
-      <div className="relative z-10 container mx-auto px-[5%] py-28 min-h-screen flex flex-col justify-center">
-        <div ref={titleRef} className="text-center mb-16">
-          <h1 className="text-5xl md:text-7xl font-black tracking-tighter bg-gradient-to-br from-white to-gray-400 bg-clip-text text-transparent">
-            Get In Touch
-          </h1>
-          <p className="text-lg text-gray-400 mt-4 max-w-2xl mx-auto">
-            We&apos;re here to help and answer any question you might have. We
-            look forward to hearing from you.
-          </p>
-        </div>
+      <div className="relative z-10 container mx-auto px-[5%] max-w-7xl">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+          
+          {/* LEFT COLUMN: Header & Contact Grid (5 Columns) */}
+          <div className="lg:col-span-5 space-y-8">
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+            >
+              <h1 className="text-5xl md:text-7xl font-black tracking-tighter bg-gradient-to-br from-slate-950 to-slate-600 bg-clip-text text-transparent mb-4">
+                Let&apos;s Build Together
+              </h1>
+              <p className="text-lg text-slate-600 max-w-md">
+                We answer every inquiry promptly. Send us a message or find our locations directly.
+              </p>
+            </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          <form
-            ref={formRef}
-            onSubmit={handleFormSubmit}
-            className="bg-gradient-to-br from-[rgba(255,255,255,0.05)] to-[rgba(255,255,255,0.02)] p-8 rounded-2xl backdrop-blur-lg border border-white/10 space-y-6"
-          >
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label
-                  htmlFor="name"
-                  className="block text-sm font-medium text-gray-300 mb-2"
-                >
-                  Full Name
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  required
-                  className="w-full p-3 bg-[#1a1a1e] border border-gray-700 rounded-lg text-[#F0F0F0] focus:outline-none focus:border-[var(--primary-accent)] focus:ring-2 focus:ring-[var(--primary-accent)]/50 transition-all shadow-inner focus:shadow-[0_0_15px_rgba(157,0,255,0.3)]"
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-medium text-gray-300 mb-2"
-                >
-                  Email Address
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  required
-                  className="w-full p-3 bg-[#1a1a1e] border border-gray-700 rounded-lg text-[#F0F0F0] focus:outline-none focus:border-[var(--primary-accent)] focus:ring-2 focus:ring-[var(--primary-accent)]/50 transition-all shadow-inner focus:shadow-[0_0_15px_rgba(157,0,255,0.3)]"
-                />
-              </div>
-            </div>
-            <div>
-              <label
-                htmlFor="subject"
-                className="block text-sm font-medium text-gray-300 mb-2"
-              >
-                Subject
-              </label>
-              <input
-                type="text"
-                id="subject"
-                required
-                className="w-full p-3 bg-[#1a1a1e] border border-gray-700 rounded-lg text-[#F0F0F0] focus:outline-none focus:border-[var(--primary-accent)] focus:ring-2 focus:ring-[var(--primary-accent)]/50 transition-all shadow-inner focus:shadow-[0_0_15px_rgba(157,0,255,0.3)]"
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="message"
-                className="block text-sm font-medium text-gray-300 mb-2"
-              >
-                Message
-              </label>
-              <textarea
-                id="message"
-                rows={5}
-                required
-                className="w-full p-3 bg-[#1a1a1e] border border-gray-700 rounded-lg text-[#F0F0F0] focus:outline-none focus:border-[var(--primary-accent)] focus:ring-2 focus:ring-[var(--primary-accent)]/50 transition-all shadow-inner focus:shadow-[0_0_15px_rgba(157,0,255,0.3)]"
-              ></textarea>
-            </div>
-            <div className="h-12">
-              {formStatus === "success" ? (
-                <p className="text-center text-green-400">
-                  Message sent successfully! We&apos;ll be in touch soon.
-                </p>
-              ) : formStatus === "error" ? (
-                <p className="text-center text-red-400">
-                  Something went wrong. Please try again.
-                </p>
-              ) : (
-                <button
-                  type="submit"
-                  disabled={formStatus === "sending"}
-                  className=" bg-white/40 w-full py-3 text-lg font-bold text-black/70 rounded-xl transition-all duration-300 hover:shadow-[0_0_20px_var(--primary-accent)] hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {formStatus === "sending" ? "Sending..." : "Send Message"}
-                </button>
-              )}
-            </div>
-          </form>
-
-          <div ref={detailsRef} className="space-y-8">
-            <div className="p-8 rounded-2xl bg-[rgba(16,16,18,0.6)] backdrop-blur-md border border-white/10 space-y-4">
-              <div className="flex items-center">
-                <MailIcon />
-                <a
-                  href="mailto:info@devinfotech.net"
-                  className="hover:text-[var(--primary-accent)] transition-colors"
-                >
-                  info@devinfotech.net
-                </a>
-              </div>
-              <a href={"tel:9825039020"}>
-                <div className="flex items-center">
-                  <PhoneIcon />
-                  <span>+91 98250 39020</span>
-                </div>
-              </a>
-              <a href={"tel:6351559189"}>
-                <div className="flex items-center">
-                  <PhoneIcon />
-                  <span>+91 635155 9189</span>
-                </div>
-              </a>
-              <div className="flex items-start">
-                <LocationIcon />
-                <span>
-                  TF 63, Earth Eon, opp. Urmi School
-                  <br /> Over Bridge, New Sama, Vadodara,
-                  <br /> Gujarat 390008
-                </span>
-              </div>
+            <div className="grid grid-cols-1 gap-4">
+              {[
+                { icon: Mail, title: "Email Us", detail: "info@devinfotech.net", link: "mailto:info@devinfotech.net" },
+                { icon: Phone, title: "Call Direct", detail: "+91 98250 39020", link: "tel:9825039020" },
+                { icon: MapPin, title: "Visit Office", detail: "TF 63, Earth Eon, New Sama, Vadodara" }
+              ].map((item, index) => {
+                const Icon = item.icon;
+                return (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, x: -20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.4, delay: index * 0.1 }}
+                    className="p-6 bg-white/75 backdrop-blur-md rounded-2xl border border-slate-200/50 shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300 flex items-center gap-4 group"
+                  >
+                    <div className="p-4 rounded-xl bg-gradient-to-br from-[var(--primary-accent)] to-blue-500 text-white shadow-md group-hover:scale-110 transition-transform duration-300">
+                      <Icon className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">{item.title}</p>
+                      {item.link ? (
+                        <a href={item.link} className="text-slate-800 font-bold hover:text-[var(--primary-accent)] transition-colors">
+                          {item.detail}
+                        </a>
+                      ) : (
+                        <p className="text-slate-800 font-bold">{item.detail}</p>
+                      )}
+                    </div>
+                  </motion.div>
+                );
+              })}
             </div>
 
-            <div className="rounded-2xl overflow-hidden border border-white/10">
+            {/* Inset Circular/Framed Map */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="rounded-3xl overflow-hidden border border-slate-200/50 shadow-xl"
+            >
               <iframe
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3690.344640743591!2d73.20148427586726!3d22.340612041431918!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395fcf29b911c9d1%3A0x8452f3f2f53bf791!2sDev%20Infotech!5e0!3m2!1sen!2sin!4v1757838840866!5m2!1sen!2sin"
                 width="100%"
-                height="250"
-                style={{ border: 0, filter: "invert(90%) hue-rotate(180deg)" }}
+                height="220"
+                style={{ border: 0 }}
                 allowFullScreen={true}
                 loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
               ></iframe>
-            </div>
+            </motion.div>
           </div>
+
+          {/* RIGHT COLUMN: Glass Form (7 Columns) */}
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="lg:col-span-7 bg-white/80 backdrop-blur-xl p-8 md:p-12 rounded-3xl border border-slate-200/80 shadow-2xl space-y-8 flex flex-col justify-center"
+          >
+            <div>
+              <h3 className="text-2xl font-black text-slate-900 mb-1">Send a Message</h3>
+              <p className="text-sm text-slate-500">We respond to all tickets in under 2 working hours.</p>
+            </div>
+
+            <form onSubmit={handleFormSubmit} className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="relative group">
+                  <input
+                    type="text"
+                    required
+                    placeholder=" "
+                    className="peer w-full bg-transparent border-b-2 border-slate-200 p-2 text-slate-900 focus:outline-none focus:border-[var(--primary-accent)] transition-colors"
+                  />
+                  <label className="absolute left-0 top-2 text-slate-400 text-sm transition-all duration-300 peer-placeholder-shown:text-base peer-placeholder-shown:top-2 peer-focus:-top-4 peer-focus:text-xs peer-focus:text-[var(--primary-accent)] cursor-text">
+                    Full Name
+                  </label>
+                </div>
+
+                <div className="relative group">
+                  <input
+                    type="email"
+                    required
+                    placeholder=" "
+                    className="peer w-full bg-transparent border-b-2 border-slate-200 p-2 text-slate-900 focus:outline-none focus:border-[var(--primary-accent)] transition-colors"
+                  />
+                  <label className="absolute left-0 top-2 text-slate-400 text-sm transition-all duration-300 peer-placeholder-shown:text-base peer-placeholder-shown:top-2 peer-focus:-top-4 peer-focus:text-xs peer-focus:text-[var(--primary-accent)] cursor-text">
+                    Email Address
+                  </label>
+                </div>
+              </div>
+
+              <div className="relative group">
+                <input
+                  type="text"
+                  required
+                  placeholder=" "
+                  className="peer w-full bg-transparent border-b-2 border-slate-200 p-2 text-slate-900 focus:outline-none focus:border-[var(--primary-accent)] transition-colors"
+                />
+                <label className="absolute left-0 top-2 text-slate-400 text-sm transition-all duration-300 peer-placeholder-shown:text-base peer-placeholder-shown:top-2 peer-focus:-top-4 peer-focus:text-xs peer-focus:text-[var(--primary-accent)] cursor-text">
+                  Subject
+                </label>
+              </div>
+
+              <div className="relative group">
+                <textarea
+                  required
+                  rows={4}
+                  placeholder=" "
+                  className="peer w-full bg-transparent border-b-2 border-slate-200 p-2 text-slate-900 focus:outline-none focus:border-[var(--primary-accent)] transition-colors resize-none"
+                ></textarea>
+                <label className="absolute left-0 top-2 text-slate-400 text-sm transition-all duration-300 peer-placeholder-shown:text-base peer-placeholder-shown:top-2 peer-focus:-top-4 peer-focus:text-xs peer-focus:text-[var(--primary-accent)] cursor-text">
+                  Message Details
+                </label>
+              </div>
+
+              <div className="pt-4">
+                {formStatus === "success" ? (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="p-4 bg-green-50 border border-green-200 text-green-700 rounded-xl flex items-center justify-center gap-2 font-bold"
+                  >
+                    <CheckCircle2 className="w-5 h-5" />
+                    Message Sent Successfully!
+                  </motion.div>
+                ) : (
+                  <button
+                    type="submit"
+                    disabled={formStatus === "sending"}
+                    className="group relative w-full overflow-hidden p-4 bg-gradient-to-r from-slate-900 to-slate-800 text-white font-bold rounded-2xl shadow-xl hover:shadow-2xl hover:-translate-y-1 transition duration-300 flex items-center justify-center gap-3 disabled:opacity-50"
+                  >
+                    <span className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-[var(--primary-accent)] to-cyan-400 group-hover:h-full transition-all duration-300 -z-10" />
+                    {formStatus === "sending" ? "Sending..." : "Submit Inquiry"}
+                    <Send className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                  </button>
+                )}
+              </div>
+            </form>
+          </motion.div>
+
         </div>
       </div>
     </div>
   );
-};
-
-export default ContactPage;
+}

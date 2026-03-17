@@ -3,22 +3,28 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import prismadb from "@/lib/prisma";
-import { DeleteProductButton } from "@/components/buttons/DeleteProductButton"; // We'll create this next
-
+import { DeleteProductButton } from "@/components/buttons/DeleteProductButton";
 // Function to get all products
 async function getProducts() {
-  const products = await prismadb.product.findMany({
-    orderBy: { createdAt: "desc" },
-  });
+  const supabase = await createClient();
+  const { data: products, error } = await supabase
+    .from("Product")
+    .select("*")
+    .order("createdAt", { ascending: false });
+
+  if (error) {
+    console.error("Error fetching admin products:", error);
+    return [];
+  }
   return products;
 }
 
 export default async function AdminProductsPage() {
   // Your existing admin role check
   const supabase = await createClient();
-  const { data, error } = await supabase.auth.getClaims();
-  if (error || !data?.claims || data.claims.app_metadata?.role !== "ADMIN") {
+  const { data: { session } } = await supabase.auth.getSession();
+  const user = session?.user;
+  if (!user || user.app_metadata?.role !== "ADMIN") {
     notFound();
   }
 
@@ -67,7 +73,7 @@ export default async function AdminProductsPage() {
                 </td>
                 <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                   <p className="text-gray-900 whitespace-no-wrap">
-                    {product.updatedAt.toLocaleDateString()}
+                    {new Date(product.updatedAt).toLocaleDateString()}
                   </p>
                 </td>
                 <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm text-right space-x-2">

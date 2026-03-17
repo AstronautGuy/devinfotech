@@ -1,0 +1,58 @@
+
+> devinfotech@0.1.0 build
+> next build --turbopack
+
+   Γû▓ Next.js 15.5.3 (Turbopack)
+
+   Creating an optimized production build ...
+ ΓÜá Slow filesystem detected. The benchmark took 147ms. If E:\Antigravity\devinfotech\.next is a network drive, consider moving it to a local folder. If you have an antivirus enabled, consider excluding your project directory.
+ Γ£ô Finished writing to disk in 59ms
+ Γ£ô Compiled successfully in 4.1s
+   Linting and checking validity of types ...
+(node:12308) ESLintIgnoreWarning: The ".eslintignore" file is no longer supported. Switch to using the "ignores" property in "eslint.config.js": https://eslint.org/docs/latest/use/configure/migration-guide#ignoring-files
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+./src/app/contact/page.tsx
+175:27  Warning: The ref value 'globeContainerRef.current' will likely have changed by the time this effect cleanup function runs. If this ref points to a node rendered by React, copy 'globeContainerRef.current' to a variable inside the effect, and use that variable in the cleanup function.  react-hooks/exhaustive-deps
+
+./src/app/products/page.tsx
+3:8  Warning: 'Link' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./src/app/products/[slug]/page.tsx
+36:3  Warning: 'parent' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./src/components/Header.tsx
+28:10  Warning: 'user' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+58:19  Warning: 'subscription' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+224:17  Warning: 'className' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./src/components/HeroSection.tsx
+5:22  Warning: 'ChevronRight' is defined but never used.  @typescript-eslint/no-unused-vars
+49:15  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/components/Stats.tsx
+40:3  Warning: 'duration' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+
+./src/components/TextScramble.tsx
+78:6  Warning: React Hook useEffect has a missing dependency: 'scramble'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+./src/components/Timeline.tsx
+3:3  Warning: 'useMotionValueEvent' is defined but never used.  @typescript-eslint/no-unused-vars
+
+info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/app/api-reference/config/eslint#disabling-rules
+   Collecting page data ...
+   Generating static pages (0/18) ...
+Error occurred prerendering page "/_not-found". Read more: https://nextjs.org/docs/messages/prerender-error
+Error: @supabase/ssr: Your project's URL and API key are required to create a Supabase client!
+
+Check your Supabase project's API settings to find these values
+
+https://supabase.com/dashboard/project/_/settings/api
+    at <unknown> (https://supabase.com/dashboard/project/_/settings/api)
+    at <unknown> (E:\Antigravity\devinfotech\.next\server\chunks\ssr\_e27d1f3d._.js:34:41156)
+    at bI (E:\Antigravity\devinfotech\.next\server\chunks\ssr\_e27d1f3d._.js:38:4637)
+    at o (E:\Antigravity\devinfotech\.next\server\chunks\ssr\_f1f76c18._.js:1:1555) {
+  digest: '2949310126'
+}
+Export encountered an error on /_not-found/page: /_not-found, exiting the build.
+ Γ¿» Next.js build worker exited with code: 1 and signal: null

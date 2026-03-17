@@ -11,9 +11,9 @@ import { createClient } from "@/lib/supabase/client";
 import { User } from "@supabase/supabase-js";
 
 const menuItems = [
-  { name: "Services", href: "/" },
+  { name: "Services", href: "/services" },
   { name: "Shop", href: "/products" },
-  { name: "About", href: "/" },
+  { name: "About", href: "/about" },
   { name: "Contact Us", href: "/contact" },
 ];
 
@@ -46,9 +46,11 @@ const Header = () => {
     fetchUser();
 
     const checkAdmin = async () => {
-      const { data, error } = await supabase.auth.getClaims();
-      if (error || !data?.claims || data.claims.app_metadata?.role == "ADMIN") {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user?.app_metadata?.role === "ADMIN") {
         setIsAdmin(true);
+      } else {
+        setIsAdmin(false);
       }
     };
 
@@ -60,6 +62,7 @@ const Header = () => {
         const currentUser = session?.user ?? null;
         setUser(currentUser);
         setIsLoggedIn(!!currentUser);
+        setIsAdmin(currentUser?.app_metadata?.role === "ADMIN");
       },
     );
   }, [supabase]);
@@ -91,7 +94,7 @@ const Header = () => {
           className={cn(
             "mx-auto mt-2 max-w-6xl px-6 transition-all duration-300 lg:px-12",
             isScrolled &&
-              "bg-background/50 max-w-4xl rounded-2xl border backdrop-blur-lg lg:px-5",
+            "bg-background/50 max-w-4xl rounded-2xl border backdrop-blur-lg lg:px-5",
           )}
         >
           <div className="relative flex flex-wrap items-center justify-between gap-6 py-3 lg:gap-0 lg:py-4">
@@ -121,11 +124,10 @@ const Header = () => {
                   <li key={index}>
                     <Link
                       href={item.href}
-                      className={`text-muted-foreground block duration-150 ${
-                        isContactPage
-                          ? "hover:text-white"
-                          : "hover:text-accent-foreground"
-                      }`}
+                      className={`text-muted-foreground block duration-150 ${isContactPage
+                        ? "hover:text-white"
+                        : "hover:text-accent-foreground"
+                        }`}
                     >
                       <span>{item.name}</span>
                     </Link>
@@ -226,7 +228,7 @@ const Logo = ({ className }: { className?: string }) => {
   const isContactPage = pathname === "/contact";
 
   return (
-    <TextScramble className={`text-2xl ${isContactPage ? "text-white" : ""}`}>
+    <TextScramble className={`text-2xl ${isContactPage ? "" : ""}`}>
       devinfotech
     </TextScramble>
   );

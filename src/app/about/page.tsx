@@ -1,12 +1,23 @@
 import Image from "next/image";
-import { Timeline } from "@/components/Timeline"; // Assuming Timeline component is in @/components/Timeline
+import { Timeline } from "@/components/Timeline"; 
+import { CoreValues } from "@/components/CoreValues";
+import { getKeywords } from "@/lib/seo";
+import { Metadata } from "next";
+
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: "About DevInfotech - Absolute IT Solutions since 1999",
+    description: "Founded in 1999 by Mr. Rajan Ghanshyam, DevInfotech delivers reliable Cloud VPS, CCTV designs, and absolute AMC support structures in Vadodara.",
+    keywords: getKeywords(["about devinfotech", "company history", "India IT services", "Vadodara ISP", "Rajan Ghanshyam"]),
+  };
+}
 
 export default function About() {
   const data = [
     {
       title: "1999",
       content: (
-        <div>
+        <div key="1999">
           <p className="text-neutral-800 dark:text-neutral-200 text-sm md:text-base font-normal mb-8">
             The Genesis:{" "}
             <span className="font-bold">Om Computer Services (OCS)</span> was
@@ -51,7 +62,7 @@ export default function About() {
     {
       title: "2012",
       content: (
-        <div>
+        <div key="2012">
           <p className="text-neutral-800 dark:text-neutral-200 text-sm md:text-base font-normal mb-8">
             Service Diversification: Our services evolved beyond individual
             computer repairs to include comprehensive network infrastructure and
@@ -64,7 +75,7 @@ export default function About() {
     {
       title: "2016",
       content: (
-        <div>
+        <div key="2016">
           <p className="text-neutral-800 dark:text-neutral-200 text-sm md:text-base font-normal mb-8">
             A New Identity: Om Computer Services rebranded to{" "}
             <span className="font-bold">DevInfotech</span>, marking a strategic
@@ -77,7 +88,7 @@ export default function About() {
     {
       title: "2019",
       content: (
-        <div>
+        <div key="2019">
           <p className="text-neutral-800 dark:text-neutral-200 text-sm md:text-base font-normal mb-8">
             Our First Dedicated Office: We inaugurated our first official office
             space, a significant milestone that provided a professional
@@ -96,7 +107,7 @@ export default function About() {
     {
       title: "2020",
       content: (
-        <div>
+        <div key="2020">
           <p className="text-neutral-800 dark:text-neutral-200 text-sm md:text-base font-normal mb-8">
             Serving the Community: Honored to be chosen as a technology partner
             for the{" "}
@@ -112,7 +123,7 @@ export default function About() {
     {
       title: "2021",
       content: (
-        <div>
+        <div key="2021">
           <p className="text-neutral-800 dark:text-neutral-200 text-sm md:text-base font-normal mb-8">
             Strengthening National Security: Began providing critical IT
             infrastructure support to the{" "}
@@ -125,7 +136,7 @@ export default function About() {
     {
       title: "2022",
       content: (
-        <div>
+        <div key="2022">
           <p className="text-neutral-800 dark:text-neutral-200 text-sm md:text-base font-normal mb-8">
             Corporate & Global Reach: A year of significant expansion, securing
             major contracts with industrial giant{" "}
@@ -140,7 +151,7 @@ export default function About() {
     {
       title: "2023",
       content: (
-        <div>
+        <div key="2023">
           <p className="text-neutral-800 dark:text-neutral-200 text-sm md:text-base font-normal mb-8">
             Powering National Infrastructure: Entrusted with providing
             mission-critical IT solutions for the{" "}
@@ -154,7 +165,7 @@ export default function About() {
     {
       title: "2024",
       content: (
-        <div>
+        <div key="2024">
           <p className="text-neutral-800 dark:text-neutral-200 text-sm md:text-base font-normal mb-8">
             Cloud Innovation: Launched a proprietary cloud server network across
             Vadodara, offering secure local cloud solutions. We proudly welcomed
@@ -169,7 +180,7 @@ export default function About() {
     {
       title: "2025",
       content: (
-        <div>
+        <div key="2025">
           <p className="text-neutral-800 dark:text-neutral-200 text-sm md:text-base font-normal mb-8">
             New Ventures & Leadership: Expanded into the international
             biomedical field with{" "}
@@ -185,9 +196,31 @@ export default function About() {
   ];
 
   return (
-    // You might want to wrap this in a container div with some padding
-    <div className="bg-white dark:bg-black py-20">
-      <Timeline data={data} />
+    <div className="bg-slate-50 text-slate-900 min-h-screen relative overflow-hidden">
+      {/* Background gradients/effects for glassmorphism */}
+      <div className="absolute top-0 left-0 w-full h-full z-0 pointer-events-none">
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-[var(--primary-accent)]/10 blur-[120px]"></div>
+        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-blue-500/10 blur-[120px]"></div>
+      </div>
+
+      <div className="relative z-10 container mx-auto px-[5%] py-28 min-h-screen">
+        <div className="text-center mb-16">
+          <h1 className="text-5xl md:text-7xl font-black tracking-tighter bg-gradient-to-br from-slate-950 to-slate-600 bg-clip-text text-transparent mb-6">
+            About DevInfotech
+          </h1>
+          <p className="text-lg text-slate-600 mt-4 max-w-3xl mx-auto leading-relaxed">
+            Established in <strong>1999</strong> by <strong>Mr. Rajan Ghanshyam</strong>, DevInfotech was founded with a clear vision: to provide affordable, reliable, and cutting-edge IT services under one roof. With decades of experience, we are dedicated to long-term service, robust business support, and serving as a trusted partner for all your technological needs.
+          </p>
+        </div>
+
+        <div className="bg-white/80 p-8 md:p-12 rounded-3xl backdrop-blur-md border border-slate-200/60 shadow-xl mb-20">
+            <h2 className="text-3xl font-bold mb-8 text-center bg-gradient-to-r from-slate-800 to-slate-500 bg-clip-text text-transparent">Our Journey</h2>
+            <Timeline data={data} />
+        </div>
+
+        {/* Core Values Section */}
+        <CoreValues />
+      </div>
     </div>
   );
 }

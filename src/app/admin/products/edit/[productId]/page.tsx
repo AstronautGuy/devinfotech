@@ -1,28 +1,41 @@
 // app/admin/products/edit/[productId]/page.tsx
 
 import { notFound } from "next/navigation";
-import prismadb from "@/lib/prisma";
+import { createClient } from "@/lib/supabase/server";
 // We'll create EditProductForm next
 import { EditProductForm } from "@/components/forms/EditProductForm";
 
-async function getProductById(productId: string) {
-  const product = await prismadb.product.findUnique({
-    where: { id: productId },
-    include: { images: true, tags: true },
-  });
+export const dynamic = 'force-dynamic';
 
-  if (!product) {
+async function getProductById(productId: string) {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("Product")
+    .select(`
+      *,
+      images:ProductImage(*),
+      _ProductToTag(
+        Tag(*)
+      )
+    `)
+    .eq("id", productId)
+    .single();
+
+  if (error || !data) {
     notFound();
   }
-  return product;
+  
+  const tags = data._ProductToTag?.map((pt: any) => pt.Tag) || [];
+  return { ...data, tags };
 }
 
 export default async function EditProductPage({
   params,
 }: {
-  params: { productId: string };
+  params: Promise<{ productId: string }>;
 }) {
-  const product = await getProductById(params.productId);
+  const { productId } = await params;
+  const product = await getProductById(productId);
 
   return (
     <main className="bg-gray-50 py-12 px-4">

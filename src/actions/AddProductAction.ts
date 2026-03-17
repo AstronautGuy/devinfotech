@@ -4,10 +4,10 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import prismadb from "@/lib/prisma";
 import { FormState } from "@/lib/definations";
 import { z } from "zod";
-import { Prisma } from "@prisma/client";
+import { createClient } from "@/lib/supabase/server";
+import crypto from "crypto"; // Add crypto to generate UUIDs
 
 const productSchema = z.object({
   name: z
@@ -64,50 +64,68 @@ export async function createProduct(
     .filter((tag) => tag !== "");
 
   try {
-    await prismadb.$transaction(async (prisma) => {
-      // ✅ This creates the product and connects the tags
-      const product = await prisma.product.create({
-        data: {
-          name,
-          slug,
-          brand,
-          price,
-          description,
-          metaTitle,
-          metaDescription,
-          // highlight-start
-          tags: {
-            connectOrCreate: tagNames.map((tagName) => ({
-              where: { name: tagName },
-              create: { name: tagName },
-            })),
-          },
-          // highlight-end
-        },
-      });
+    const supabase = await createClient();
 
-      // Create associated images
-      if (imageUrls.length > 0) {
-        await prisma.productImage.createMany({
-          data: imageUrls.map((url) => ({
-            url: url,
-            productId: product.id,
-          })),
-        });
+    // 1. Insert product
+    const { data: productData, error: productError } = await supabase
+      .from("Product")
+      .insert({
+        id: crypto.randomUUID(), // Generate UUID manually
+        name,
+        slug,
+        brand,
+        price,
+        description,
+        metaTitle,
+        metaDescription,
+        updatedAt: new Date().toISOString(), // Add updatedAt manually
+      })
+      .select("id")
+      .single();
+
+    if (productError) {
+      if (productError.code === "23505" && productError.message.includes("slug")) {
+        return {
+          message: "This slug is already in use. Please choose another.",
+          errors: { slug: ["Slug already exists."] },
+        };
       }
-    });
-  } catch (error: unknown) {
-    if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      if (error.code === "P2002") {
-        const target = error.meta?.target as string[] | undefined;
-        if (target?.includes("slug")) {
-          return {
-            message: "This slug is already in use. Please choose another.",
-            errors: { slug: ["Slug already exists."] },
-          };
-        }
+      throw productError;
+    }
+    
+    if (!productData) throw new Error("Failed to create product");
+    
+    const newProductId = productData.id;
+
+    // 2. Insert Images
+    if (imageUrls.length > 0) {
+      await supabase.from("ProductImage").insert(
+        imageUrls.map((url) => ({ 
+          id: crypto.randomUUID(), // Generate UUID manually
+          url, 
+          productId: newProductId 
+        }))
+      );
+    }
+
+    // 3. Process Tags
+    if (tagNames.length > 0) {
+      const { data: upsertedTags, error: tagsErr } = await supabase
+        .from("Tag")
+        .upsert(
+          tagNames.map((name) => ({ name })),
+          { onConflict: "name" }
+        )
+        .select("id");
+      
+      if (!tagsErr && upsertedTags) {
+        await supabase.from("_ProductToTag").insert(
+          upsertedTags.map((t) => ({ A: newProductId, B: t.id }))
+        );
       }
     }
+  } catch (error: unknown) {
+    console.error("Database error creating product:", error);
     return { message: "Database error: Failed to create product.", errors: {} };
   }
 

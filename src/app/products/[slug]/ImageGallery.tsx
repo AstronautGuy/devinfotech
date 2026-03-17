@@ -2,9 +2,9 @@
 "use client";
 
 import { useState } from "react";
-// Import the ProductImage type from your Prisma client
-// Make sure this path is correct for your project
-import { ProductImage } from "@prisma/client";
+// Import the ProductImage type from local database types
+import type { Database } from "@/lib/database.types";
+type ProductImage = Database["public"]["Tables"]["ProductImage"]["Row"];
 import Image from "next/image";
 
 interface ImageGalleryProps {
@@ -48,9 +48,9 @@ export default function ImageGallery({
 
       {/* Thumbnail Grid */}
       <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-4 xl:grid-cols-5 gap-2">
-        {images.map((image) => (
+        {images.map((image, index) => (
           <button
-            key={image.id}
+            key={image.id || index}
             onClick={() => setActiveImage(image.url)}
             className={`
               relative aspect-square w-full overflow-hidden rounded-md 

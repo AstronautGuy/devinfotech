@@ -2,13 +2,13 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import prismadb from "@/lib/prisma";
+import { createClient } from "@/lib/supabase/server";
 
 export async function deleteProduct(productId: string) {
   try {
-    await prismadb.product.delete({
-      where: { id: productId },
-    });
+    const supabase = await createClient();
+    const { error } = await supabase.from("Product").delete().eq("id", productId);
+    if (error) throw error;
   } catch (error) {
     // Handle potential errors, e.g., product not found
     console.error("Failed to delete product:", error);

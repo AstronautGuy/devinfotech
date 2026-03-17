@@ -1,23 +1,37 @@
-import prismadb from "@/lib/prisma";
+import { createClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
 import { Metadata, ResolvingMetadata } from "next";
 import ImageGallery from "./ImageGallery"; // Existing component
 
+export const dynamic = 'force-dynamic';
+
 interface ProductPageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
 // Fetch single product with images, tags, etc.
 async function getProduct(slug: string) {
-  const product = await prismadb.product.findUnique({
-    where: { slug },
-    include: { images: true, tags: true },
-  });
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("Product")
+    .select(`
+      *,
+      images:ProductImage(url),
+      _ProductToTag(
+        Tag(id, name)
+      )
+    `)
+    .eq("slug", slug)
+    .single();
 
-  if (!product) notFound();
-  return product;
+  if (error || !data) notFound();
+
+  // Unwrap junction table to match Prisma's output structure
+  const tags = data._ProductToTag?.map((pt: any) => pt.Tag) || [];
+
+  return { ...data, tags };
 }
 
 // Clean rich text HTML into plain text for meta/JSON-LD
@@ -32,9 +46,10 @@ function cleanDescription(html: string | null, maxLength = 160) {
 
 // Generate dynamic metadata
 export async function generateMetadata(
-  { params: { slug } }: ProductPageProps,
+  { params }: ProductPageProps,
   parent: ResolvingMetadata,
 ): Promise<Metadata> {
+  const { slug } = await params;
   const product = await getProduct(slug);
   const metaDesc =
     product.metaDescription || cleanDescription(product.description);
@@ -42,11 +57,11 @@ export async function generateMetadata(
   return {
     title: product.metaTitle || product.name,
     description: metaDesc,
-    keywords: product.tags.map((tag) => tag.name),
+    keywords: product.tags.map((tag: { name: string }) => tag.name),
     openGraph: {
       title: product.metaTitle || product.name,
       description: metaDesc,
-      images: product.images?.map((img) => ({ url: img.url })) || [],
+      images: product.images?.map((img: { url: string }) => ({ url: img.url })) || [],
       url: `https://devinfotech.net/products/${product.slug}`,
       type: "website", // ✅ fixed
     },
@@ -54,7 +69,7 @@ export async function generateMetadata(
       card: "summary_large_image",
       title: product.metaTitle || product.name,
       description: metaDesc,
-      images: product.images?.map((img) => img.url) || [],
+      images: product.images?.map((img: { url: string }) => img.url) || [],
     },
     alternates: {
       canonical: `https://devinfotech.net/products/${product.slug}`,
@@ -64,8 +79,9 @@ export async function generateMetadata(
 
 // Product page
 export default async function ProductPage({
-  params: { slug },
+  params,
 }: ProductPageProps) {
+  const { slug } = await params;
   const product = await getProduct(slug);
 
   // JSON-LD structured data
@@ -73,7 +89,7 @@ export default async function ProductPage({
     "@context": "https://schema.org/",
     "@type": "Product",
     name: product.name,
-    image: product.images.map((img) => img.url),
+    image: product.images.map((img: { url: string }) => img.url),
     description: cleanDescription(product.description, 300),
     brand: { "@type": "Brand", name: product.brand || "Unknown Brand" },
     offers: {
@@ -118,7 +134,7 @@ export default async function ProductPage({
 
           {/* Product tags */}
           <div className="mt-6 flex flex-wrap gap-2">
-            {product.tags.map((tag) => (
+            {product.tags.map((tag: { id: string; name: string }) => (
               <span
                 key={tag.id}
                 className="bg-gray-200 text-gray-800 text-xs font-medium px-2.5 py-1 rounded-full"
@@ -127,10 +143,6 @@ export default async function ProductPage({
               </span>
             ))}
           </div>
-
-          <button className="mt-8 bg-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors">
-            Add to Cart
-          </button>
         </div>
       </div>
     </div>

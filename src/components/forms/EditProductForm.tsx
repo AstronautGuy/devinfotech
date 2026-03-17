@@ -4,9 +4,14 @@ import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 import { useState } from "react";
 import { updateProduct } from "@/actions/EditProductAction";
-import type { Product, ProductImage, Tag } from "@prisma/client";
+import type { Database } from "@/lib/database.types";
+
+type Product = Database["public"]["Tables"]["Product"]["Row"];
+type ProductImage = Database["public"]["Tables"]["ProductImage"]["Row"];
+type Tag = Database["public"]["Tables"]["Tag"]["Row"];
 import { FormState } from "@/lib/definations";
 import { RichTextEditor } from "@/components/RichTextEditor";
+import { ImageUploader } from "@/components/forms/ImageUploader";
 
 // A type for the product prop that includes all its relations
 type ProductWithRelations = Product & {
@@ -49,17 +54,6 @@ export function EditProductForm({ product }: EditProductFormProps) {
   const [description, setDescription] = useState<string>(
     product.description || "",
   );
-
-  // Handler functions for the image URL list
-  const handleAddImage = () => setImageUrls([...imageUrls, ""]);
-  const handleImageChange = (index: number, value: string) => {
-    const newImageUrls = [...imageUrls];
-    newImageUrls[index] = value;
-    setImageUrls(newImageUrls);
-  };
-  const handleRemoveImage = (index: number) => {
-    setImageUrls(imageUrls.filter((_, i) => i !== index));
-  };
 
   return (
     <form
@@ -164,34 +158,14 @@ export function EditProductForm({ product }: EditProductFormProps) {
         <input type="hidden" name="description" value={description} />
       </div>
 
+      {/* Product Images Drag & Drop Section */}
       <div className="space-y-2">
         <h3 className="text-sm font-medium text-gray-700">Product Images</h3>
+        <ImageUploader value={imageUrls} onChange={setImageUrls} />
+        {/* Hidden inputs to pass array into Server Action in FormData */}
         {imageUrls.map((url, index) => (
-          <div key={index} className="flex items-center gap-2">
-            <input
-              type="url"
-              name="images"
-              value={url}
-              onChange={(e) => handleImageChange(index, e.target.value)}
-              placeholder="https://..."
-              className="flex-grow block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            />
-            <button
-              type="button"
-              onClick={() => handleRemoveImage(index)}
-              className="text-red-500 hover:text-red-700"
-            >
-              &times;
-            </button>
-          </div>
+            url && <input key={index} type="hidden" name="images" value={url} />
         ))}
-        <button
-          type="button"
-          onClick={handleAddImage}
-          className="text-sm text-blue-600 hover:text-blue-800"
-        >
-          + Add Another Image
-        </button>
       </div>
 
       <div className="border-t pt-6 space-y-4">

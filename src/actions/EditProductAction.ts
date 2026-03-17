@@ -3,7 +3,8 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import prismadb from "@/lib/prisma";
+import { createClient } from "@/lib/supabase/server";
+import crypto from "crypto"; // Add crypto to generate UUIDs
 import { FormState } from "@/lib/definations"; // ✅ single source
 import { z } from "zod";
 
@@ -68,44 +69,68 @@ export async function updateProduct(
   // highlight-end
 
   try {
-    await prismadb.$transaction(async (prisma) => {
-      // ✅ Update product details
-      await prisma.product.update({
-        where: { id: productId },
-        data: {
-          name,
-          slug,
-          brand,
-          price,
-          description,
-          metaTitle,
-          metaDescription,
-          // highlight-start
-          // ✅ 2. Synchronize the tags
-          tags: {
-            set: [], // This disconnects all previously connected tags
-            connectOrCreate: tagNames.map((name) => ({
-              where: { name: name },
-              create: { name: name },
-            })),
-          },
-          // highlight-end
-        },
-      });
+    const supabase = await createClient();
 
-      // ✅ Replace images (simple approach)
-      await prisma.productImage.deleteMany({ where: { productId } });
-      if (imageUrls.length > 0) {
-        await prisma.productImage.createMany({
-          data: imageUrls.map((url) => ({
-            url,
-            productId,
-          })),
-        });
+    // 1. Update product
+    const { error: updateError } = await supabase
+      .from("Product")
+      .update({
+        name,
+        slug,
+        brand,
+        price,
+        description,
+        metaTitle,
+        metaDescription,
+        updatedAt: new Date().toISOString(), // Supabase handles Default manually on update
+      })
+      .eq("id", productId);
+
+    if (updateError) {
+      if (updateError.code === "23505" && updateError.message.includes("slug")) {
+        return {
+          message: "This slug is already in use. Please choose another.",
+          errors: { slug: ["Slug already exists."] },
+        };
       }
-    });
+      throw updateError;
+    }
+
+    // 2. Replace images
+    await supabase.from("ProductImage").delete().eq("productId", productId);
+    if (imageUrls.length > 0) {
+      await supabase.from("ProductImage").insert(
+        imageUrls.map((url) => ({ 
+          id: crypto.randomUUID(), // Add UUID manually
+          url, 
+          productId 
+        }))
+      );
+    }
+
+    // 3. Replace Tags
+    // First, clear existing mappings
+    await supabase.from("_ProductToTag").delete().eq("A", productId);
+    
+    if (tagNames.length > 0) {
+      // Upsert tags
+      const { data: upsertedTags, error: tagsErr } = await supabase
+        .from("Tag")
+        .upsert(
+          tagNames.map((name) => ({ name })),
+          { onConflict: "name" }
+        )
+        .select("id");
+      
+      if (!tagsErr && upsertedTags) {
+        // Link tags to product
+        await supabase.from("_ProductToTag").insert(
+          upsertedTags.map((t) => ({ A: productId, B: t.id }))
+        );
+      }
+    }
   } catch (error) {
-    console.error(error);
+    console.error("Database error updating product:", error);
     return { message: "Database error: Failed to update product.", errors: {} };
   }
 
