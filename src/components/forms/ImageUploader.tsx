@@ -33,7 +33,7 @@ export function ImageUploader({ value, onChange }: ImageUploaderProps) {
       }
 
       return publicUrl;
-    } catch (error: any) {
+    } catch (error) {
       console.error("Upload failed", error);
       throw error;
     }
@@ -51,7 +51,7 @@ export function ImageUploader({ value, onChange }: ImageUploaderProps) {
         uploadedUrls.push(url);
       }
       onChange(uploadedUrls);
-    } catch (e: any) {
+    } catch (e) {
       setUploadError("Some uploads failed. Please verify your bucket is 'Public' on Supabase.");
     } finally {
       setIsUploading(false);

@@ -29,7 +29,7 @@ async function getProduct(slug: string) {
   if (error || !data) notFound();
 
   // Unwrap junction table to match Prisma's output structure
-  const tags = data._ProductToTag?.map((pt: any) => pt.Tag) || [];
+  const tags = data._ProductToTag?.map((pt: { Tag: { id: string; name: string } }) => pt.Tag) || [];
 
   return { ...data, tags };
 }
@@ -47,7 +47,7 @@ function cleanDescription(html: string | null, maxLength = 160) {
 // Generate dynamic metadata
 export async function generateMetadata(
   { params }: ProductPageProps,
-  parent: ResolvingMetadata,
+  _parent: ResolvingMetadata,
 ): Promise<Metadata> {
   const { slug } = await params;
   const product = await getProduct(slug);

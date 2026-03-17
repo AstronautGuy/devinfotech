@@ -25,7 +25,7 @@ async function getProductById(productId: string) {
     notFound();
   }
   
-  const tags = data._ProductToTag?.map((pt: any) => pt.Tag) || [];
+  const tags = data._ProductToTag?.map((pt: { Tag: { id: string; name: string } }) => pt.Tag) || [];
   return { ...data, tags };
 }
 
