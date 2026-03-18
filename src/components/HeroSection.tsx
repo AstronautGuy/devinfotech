@@ -4,6 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { ArrowRight, ChevronRight } from "lucide-react";
 import { AnimatedGroup } from "@/components/ui/animated-group";
+import { Animated3DHero } from "@/components/Animated3DHero";
 
 export function HeroSection() {
   return (
@@ -58,13 +59,14 @@ export function HeroSection() {
               aria-hidden
               className="absolute inset-0 -z-10 size-full [background:radial-gradient(125%_125%_at_50%_100%,transparent_0%,var(--background)_75%)]"
             />
-            <div className="mx-auto max-w-7xl px-6">
-              <div className="text-center sm:mx-auto lg:mr-auto lg:mt-0">
-                <AnimatedGroup>
-                  <Link
-                    href="#link"
-                    className="hover:bg-background dark:hover:border-t-border bg-muted group mx-auto flex w-fit items-center gap-4 rounded-full border p-1 pl-4 shadow-md shadow-black/5 transition-all duration-300 dark:border-t-white/5 dark:shadow-zinc-950"
-                  >
+            <div className="mx-auto max-w-7xl px-6 relative z-10">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div className="text-center lg:text-left sm:mx-auto lg:mt-0">
+                  <AnimatedGroup>
+                    <Link
+                      href="#link"
+                      className="hover:bg-background dark:hover:border-t-border bg-muted group mx-auto lg:mx-0 flex w-fit items-center gap-4 rounded-full border p-1 pl-4 shadow-md shadow-black/5 transition-all duration-300 dark:border-t-white/5 dark:shadow-zinc-950"
+                    >
                     <span className="text-foreground text-sm">
                       Visit our shop
                     </span>
@@ -82,10 +84,10 @@ export function HeroSection() {
                     </div>
                   </Link>
 
-                  <h1 className="mt-8 max-w-4xl mx-auto text-balance text-6xl md:text-7xl lg:mt-16 xl:text-[5.25rem]">
+                  <h1 className="mt-8 max-w-4xl mx-auto lg:mx-0 text-balance text-6xl md:text-7xl lg:mt-16 xl:text-[4.5rem] font-bold leading-tight">
                     Modern IT and CCTV Solutions
                   </h1>
-                  <p className="mx-auto mt-8 max-w-2xl text-balance text-lg">
+                  <p className="mx-auto lg:mx-0 mt-8 max-w-2xl text-balance text-lg text-slate-600 dark:text-slate-400">
                     Smart IT solutions, built around your needs — with
                     unbeatable quality and pricing that make us one of the top
                     names in the industry.
@@ -128,6 +130,12 @@ export function HeroSection() {
                                         </Link>
                                     </Button>
                                 </AnimatedGroup>*/}
+                </div>
+
+                {/* 3D Illustration Area */}
+                <div className="relative w-full h-[400px] lg:h-[600px] flex items-center justify-center">
+                    <Animated3DHero />
+                </div>
               </div>
             </div>
 

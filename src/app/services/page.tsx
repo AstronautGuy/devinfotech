@@ -1,6 +1,8 @@
 import { ServiceProcess } from "@/components/ServiceProcess";
 import { getKeywords } from "@/lib/seo";
 import { Metadata } from "next";
+import { AnimatedReveal, AnimatedStaggerGroup, AnimatedStaggerItem } from "@/components/AnimatedReveal";
+import { FloatingBackground } from "@/components/FloatingBackground";
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
@@ -18,20 +20,23 @@ export default function ServicesPage() {
         <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-[var(--primary-accent)]/10 blur-[150px]"></div>
         <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-blue-600/10 blur-[150px]"></div>
       </div>
+      
+      <FloatingBackground />
 
       <div className="relative z-10 container mx-auto px-[5%] py-28 min-h-screen">
-        <div className="text-center mb-20">
+        <AnimatedReveal className="text-center mb-20">
           <h1 className="text-5xl md:text-7xl font-black tracking-tighter bg-gradient-to-br from-slate-950 to-slate-600 bg-clip-text text-transparent mb-6">
             Our Premium Services
           </h1>
           <p className="text-lg text-slate-600 mt-4 max-w-2xl mx-auto">
             Reliable, secure, and fully managed cloud solutions tailored to empower your business operations anywhere in the world.
           </p>
-        </div>
+        </AnimatedReveal>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16">
+        <AnimatedStaggerGroup className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16">
           {/* TALLY ON CLOUD SECTION */}
-          <div className="bg-white/80 p-8 md:p-12 rounded-3xl backdrop-blur-md border border-slate-200/60 shadow-xl transition hover:border-[var(--primary-accent)]/50 group duration-500">
+          <AnimatedStaggerItem className="h-full">
+            <div className="h-full bg-white/80 p-8 md:p-12 rounded-3xl backdrop-blur-md border border-slate-200/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all hover:shadow-[0_20px_40px_rgba(59,130,246,0.15)] hover:border-blue-500/50 group duration-500 hover:-translate-y-2">
             <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center mb-8 border border-black/5 group-hover:scale-110 transition-transform duration-500">
                 <svg className="w-8 h-8 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
@@ -65,10 +70,12 @@ export default function ServicesPage() {
                 <span className="text-slate-700">Reliable performance with minimum downtime</span>
               </li>
             </ul>
-          </div>
+            </div>
+          </AnimatedStaggerItem>
 
           {/* VPS SECTION */}
-          <div className="bg-white/80 p-8 md:p-12 rounded-3xl backdrop-blur-md border border-slate-200/60 shadow-xl transition hover:border-purple-500/50 group duration-500">
+          <AnimatedStaggerItem className="h-full">
+            <div className="h-full bg-white/80 p-8 md:p-12 rounded-3xl backdrop-blur-md border border-slate-200/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all hover:shadow-[0_20px_40px_rgba(168,85,247,0.15)] hover:border-purple-500/50 group duration-500 hover:-translate-y-2">
             <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center mb-8 border border-black/5 group-hover:scale-110 transition-transform duration-500">
                 <svg className="w-8 h-8 text-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
@@ -102,11 +109,14 @@ export default function ServicesPage() {
                 <span className="text-slate-700">Regular backups ensure your data is always safe</span>
               </li>
             </ul>
-          </div>
-        </div>
+            </div>
+          </AnimatedStaggerItem>
+        </AnimatedStaggerGroup>
 
         {/* Service Execution Process/Roadmap */}
-        <ServiceProcess />
+        <AnimatedReveal delay={0.4} className="mt-20">
+          <ServiceProcess />
+        </AnimatedReveal>
 
       </div>
     </div>

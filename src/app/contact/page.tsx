@@ -77,23 +77,7 @@ export default function ContactPage() {
               })}
             </div>
 
-            {/* Inset Circular/Framed Map */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="rounded-3xl overflow-hidden border border-slate-200/50 shadow-xl"
-            >
-              <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3690.344640743591!2d73.20148427586726!3d22.340612041431918!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395fcf29b911c9d1%3A0x8452f3f2f53bf791!2sDev%20Infotech!5e0!3m2!1sen!2sin!4v1757838840866!5m2!1sen!2sin"
-                width="100%"
-                height="220"
-                style={{ border: 0 }}
-                allowFullScreen={true}
-                loading="lazy"
-              ></iframe>
-            </motion.div>
+
           </div>
 
           {/* RIGHT COLUMN: Glass Form (7 Columns) */}
@@ -184,8 +168,27 @@ export default function ContactPage() {
               </div>
             </form>
           </motion.div>
-
         </div>
+
+        {/* Full-width Map Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="mt-16 w-full rounded-3xl overflow-hidden border border-slate-200/50 shadow-2xl relative"
+        >
+          <div className="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-slate-900/5 to-transparent pointer-events-none z-10" />
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3690.344640743591!2d73.20148427586726!3d22.340612041431918!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395fcf29b911c9d1%3A0x8452f3f2f53bf791!2sDev%20Infotech!5e0!3m2!1sen!2sin!4v1757838840866!5m2!1sen!2sin"
+            width="100%"
+            height="450"
+            style={{ border: 0 }}
+            allowFullScreen={true}
+            loading="lazy"
+            className="w-full h-[450px] md:h-[500px]"
+          ></iframe>
+        </motion.div>
       </div>
     </div>
   );

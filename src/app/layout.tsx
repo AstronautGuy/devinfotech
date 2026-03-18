@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "@/components/Header";
 import { GradientMesh } from "@/components/GradientMesh";
 import { CustomCursor } from "@/components/CustomCursor";
+import { Preloader } from "@/components/Preloader";
 import React from "react";
 import Footer from "@/components/Footer";
 import { Analytics } from "@vercel/analytics/next"
@@ -33,6 +34,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <Preloader />
         <Header />
         <GradientMesh />
         <CustomCursor />

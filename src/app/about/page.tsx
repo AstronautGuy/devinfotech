@@ -3,6 +3,8 @@ import { Timeline } from "@/components/Timeline";
 import { CoreValues } from "@/components/CoreValues";
 import { getKeywords } from "@/lib/seo";
 import { Metadata } from "next";
+import { AnimatedReveal } from "@/components/AnimatedReveal";
+import { FloatingBackground } from "@/components/FloatingBackground";
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
@@ -202,24 +204,28 @@ export default function About() {
         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-[var(--primary-accent)]/10 blur-[120px]"></div>
         <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-blue-500/10 blur-[120px]"></div>
       </div>
+      
+      <FloatingBackground />
 
       <div className="relative z-10 container mx-auto px-[5%] py-28 min-h-screen">
-        <div className="text-center mb-16">
+        <AnimatedReveal className="text-center mb-16">
           <h1 className="text-5xl md:text-7xl font-black tracking-tighter bg-gradient-to-br from-slate-950 to-slate-600 bg-clip-text text-transparent mb-6">
             About DevInfotech
           </h1>
           <p className="text-lg text-slate-600 mt-4 max-w-3xl mx-auto leading-relaxed">
             Established in <strong>1999</strong> by <strong>Mr. Rajan Ghanshyam</strong>, DevInfotech was founded with a clear vision: to provide affordable, reliable, and cutting-edge IT services under one roof. With decades of experience, we are dedicated to long-term service, robust business support, and serving as a trusted partner for all your technological needs.
           </p>
-        </div>
+        </AnimatedReveal>
 
-        <div className="bg-white/80 p-8 md:p-12 rounded-3xl backdrop-blur-md border border-slate-200/60 shadow-xl mb-20">
+        <AnimatedReveal delay={0.2} className="bg-white/80 p-8 md:p-12 rounded-3xl backdrop-blur-md border border-slate-200/60 shadow-xl mb-20">
             <h2 className="text-3xl font-bold mb-8 text-center bg-gradient-to-r from-slate-800 to-slate-500 bg-clip-text text-transparent">Our Journey</h2>
             <Timeline data={data} />
-        </div>
+        </AnimatedReveal>
 
         {/* Core Values Section */}
-        <CoreValues />
+        <AnimatedReveal delay={0.4}>
+          <CoreValues />
+        </AnimatedReveal>
       </div>
     </div>
   );
