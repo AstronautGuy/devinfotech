@@ -11,9 +11,11 @@ export default function ContactPage() {
     e.preventDefault();
     setFormStatus("sending");
     
+    const formElement = e.currentTarget;
+    const formData = new FormData(formElement);
+    
     try {
       const { submitContactForm } = await import("@/actions/ContactAction");
-      const formData = new FormData(e.currentTarget);
       
       const result = await submitContactForm(formData);
       
@@ -22,7 +24,7 @@ export default function ContactPage() {
         alert(result.error);
       } else {
         setFormStatus("success");
-        e.currentTarget.reset();
+        formElement.reset();
       }
     } catch (err) {
       console.error(err);
@@ -119,7 +121,7 @@ export default function ContactPage() {
                     placeholder=" "
                     className="peer w-full bg-transparent border-b-2 border-slate-200 p-2 text-slate-900 focus:outline-none focus:border-[var(--primary-accent)] transition-colors"
                   />
-                  <label className="absolute left-0 top-2 text-slate-400 text-sm transition-all duration-300 peer-placeholder-shown:text-base peer-placeholder-shown:top-2 peer-focus:-top-4 peer-focus:text-xs peer-focus:text-[var(--primary-accent)] cursor-text">
+                  <label className="absolute left-0 -top-4 text-slate-400 text-xs transition-all duration-300 peer-placeholder-shown:text-base peer-placeholder-shown:top-2 peer-focus:-top-4 peer-focus:text-xs peer-focus:text-[var(--primary-accent)] cursor-text">
                     Full Name
                   </label>
                 </div>
@@ -132,7 +134,7 @@ export default function ContactPage() {
                     placeholder=" "
                     className="peer w-full bg-transparent border-b-2 border-slate-200 p-2 text-slate-900 focus:outline-none focus:border-[var(--primary-accent)] transition-colors"
                   />
-                  <label className="absolute left-0 top-2 text-slate-400 text-sm transition-all duration-300 peer-placeholder-shown:text-base peer-placeholder-shown:top-2 peer-focus:-top-4 peer-focus:text-xs peer-focus:text-[var(--primary-accent)] cursor-text">
+                  <label className="absolute left-0 -top-4 text-slate-400 text-xs transition-all duration-300 peer-placeholder-shown:text-base peer-placeholder-shown:top-2 peer-focus:-top-4 peer-focus:text-xs peer-focus:text-[var(--primary-accent)] cursor-text">
                     Email Address
                   </label>
                 </div>
@@ -146,7 +148,7 @@ export default function ContactPage() {
                   placeholder=" "
                   className="peer w-full bg-transparent border-b-2 border-slate-200 p-2 text-slate-900 focus:outline-none focus:border-[var(--primary-accent)] transition-colors"
                 />
-                <label className="absolute left-0 top-2 text-slate-400 text-sm transition-all duration-300 peer-placeholder-shown:text-base peer-placeholder-shown:top-2 peer-focus:-top-4 peer-focus:text-xs peer-focus:text-[var(--primary-accent)] cursor-text">
+                <label className="absolute left-0 -top-4 text-slate-400 text-xs transition-all duration-300 peer-placeholder-shown:text-base peer-placeholder-shown:top-2 peer-focus:-top-4 peer-focus:text-xs peer-focus:text-[var(--primary-accent)] cursor-text">
                   Subject
                 </label>
               </div>
@@ -159,7 +161,7 @@ export default function ContactPage() {
                   placeholder=" "
                   className="peer w-full bg-transparent border-b-2 border-slate-200 p-2 text-slate-900 focus:outline-none focus:border-[var(--primary-accent)] transition-colors resize-none"
                 ></textarea>
-                <label className="absolute left-0 top-2 text-slate-400 text-sm transition-all duration-300 peer-placeholder-shown:text-base peer-placeholder-shown:top-2 peer-focus:-top-4 peer-focus:text-xs peer-focus:text-[var(--primary-accent)] cursor-text">
+                <label className="absolute left-0 -top-4 text-slate-400 text-xs transition-all duration-300 peer-placeholder-shown:text-base peer-placeholder-shown:top-2 peer-focus:-top-4 peer-focus:text-xs peer-focus:text-[var(--primary-accent)] cursor-text">
                   Message Details
                 </label>
               </div>
