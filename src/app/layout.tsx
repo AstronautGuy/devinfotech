@@ -20,8 +20,26 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Devinfotech.net",
-  description: "Built by Devolve Studio",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://devinfotech.net"),
+  title: {
+    default: "Devinfotech | Web Development & IT Solutions",
+    template: "%s | Devinfotech",
+  },
+  description: "Devinfotech provides cutting-edge web development, IT solutions, and digital transformation services. Built by Devolve Studio.",
+  keywords: ["Web Development", "IT Solutions", "Devinfotech", "Software Agency", "Digital Transformation", "Devolve Studio"],
+  openGraph: {
+    title: "Devinfotech | Web Development & IT Solutions",
+    description: "Devinfotech provides cutting-edge web development, IT solutions, and digital transformation services.",
+    url: "https://devinfotech.net",
+    siteName: "Devinfotech",
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Devinfotech | Web Development & IT Solutions",
+    description: "Devinfotech provides cutting-edge web development, IT solutions, and digital transformation services.",
+  },
 };
 
 export default function RootLayout({

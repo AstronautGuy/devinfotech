@@ -3,6 +3,7 @@ import { getKeywords } from "@/lib/seo";
 import { Metadata } from "next";
 import { AnimatedReveal, AnimatedStaggerGroup, AnimatedStaggerItem } from "@/components/AnimatedReveal";
 import { FloatingBackground } from "@/components/FloatingBackground";
+import { Monitor, Wrench, LifeBuoy, Network, Printer, ShieldCheck, HardDrive, Cpu, Search, Globe, Smartphone } from "lucide-react";
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
@@ -111,6 +112,86 @@ export default function ServicesPage() {
             </ul>
             </div>
           </AnimatedStaggerItem>
+        </AnimatedStaggerGroup>
+
+        {/* OTHER CORE SERVICES */}
+        <AnimatedReveal delay={0.2} className="text-center mt-32 mb-16">
+          <h2 className="text-4xl md:text-5xl font-black tracking-tight text-slate-900 mb-4">
+            Comprehensive IT Solutions
+          </h2>
+          <p className="text-slate-600 max-w-2xl mx-auto">
+            From hardware procurement to digital presence, we’ve got your technology needs fully covered.
+          </p>
+        </AnimatedReveal>
+
+        <AnimatedStaggerGroup className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {[
+            {
+              title: "Computer Sales",
+              desc: "Premium laptops and desktops tailored for your exact needs.",
+              icon: <Monitor className="w-8 h-8 text-blue-500" />
+            },
+            {
+              title: "Computer Repair",
+              desc: "Fast, reliable diagnostics and servicing for all PC/Laptop models.",
+              icon: <Wrench className="w-8 h-8 text-purple-500" />
+            },
+            {
+              title: "IT Support & Maintenance",
+              desc: "Proactive AMC contracts to keep your business running smoothly.",
+              icon: <LifeBuoy className="w-8 h-8 text-emerald-500" />
+            },
+            {
+              title: "Networking Solutions",
+              desc: "Robust LAN/WAN setups and wireless network optimization.",
+              icon: <Network className="w-8 h-8 text-cyan-500" />
+            },
+            {
+              title: "Printers & Peripherals",
+              desc: "High-quality printers, scanners, and essential hardware accessories.",
+              icon: <Printer className="w-8 h-8 text-orange-500" />
+            },
+            {
+              title: "Security Solutions",
+              desc: "Comprehensive CCTV and biometric access control installations.",
+              icon: <ShieldCheck className="w-8 h-8 text-red-500" />
+            },
+            {
+              title: "Data Recovery",
+              desc: "Professional data retrieval from corrupted or damaged drives.",
+              icon: <HardDrive className="w-8 h-8 text-indigo-500" />
+            },
+            {
+              title: "Custom PC Builds",
+              desc: "High-performance workstations and gaming rigs built to order.",
+              icon: <Cpu className="w-8 h-8 text-pink-500" />
+            },
+            {
+              title: "SEO Optimization",
+              desc: "Data-driven strategies to rank rank higher and increase organic traffic.",
+              icon: <Search className="w-8 h-8 text-teal-500" />
+            },
+            {
+              title: "Web Development",
+              desc: "Stunning, scalable, fast websites and powerful web applications.",
+              icon: <Globe className="w-8 h-8 text-yellow-500" />
+            },
+            {
+              title: "iOS/Android Apps",
+              desc: "Native and cross-platform mobile apps for iOS and Android.",
+              icon: <Smartphone className="w-8 h-8 text-rose-500" />
+            }
+          ].map((service, i) => (
+            <AnimatedStaggerItem key={i}>
+              <div className="bg-white/70 backdrop-blur-lg border border-slate-200/50 p-6 rounded-3xl shadow-[0_4px_20px_rgb(0,0,0,0.03)] hover:shadow-[0_10px_30px_rgb(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-300 h-full flex flex-col items-start group">
+                <div className="w-16 h-16 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-sm">
+                  {service.icon}
+                </div>
+                <h3 className="text-xl font-bold text-slate-800 mb-2">{service.title}</h3>
+                <p className="text-slate-500 text-sm leading-relaxed">{service.desc}</p>
+              </div>
+            </AnimatedStaggerItem>
+          ))}
         </AnimatedStaggerGroup>
 
         {/* Service Execution Process/Roadmap */}
