@@ -3,6 +3,7 @@ import { unstable_cache } from "next/cache";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import ImageGallery from "./ImageGallery"; 
+import { AddToCartButton } from "@/components/AddToCartButton";
 
 export const dynamic = 'force-dynamic';
 
@@ -187,15 +188,7 @@ export default async function ProductPage({
 
             {/* Premium Call to Action */}
             <div className="flex flex-col sm:flex-row gap-4 mb-16">
-              <button className="group relative w-full sm:w-auto overflow-hidden bg-slate-900 text-white font-black text-lg py-5 px-10 rounded-2xl shadow-xl hover:shadow-[0_20px_40px_rgba(0,0,0,0.2)] hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-3 active:scale-95 border border-slate-800">
-                <span className="relative z-10 flex items-center gap-3">
-                  <svg className="w-5 h-5 transition-transform group-hover:-rotate-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                  </svg>
-                  Add to Cart
-                </span>
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-[150%] group-hover:translate-x-[150%] transition-transform duration-700 z-0 opacity-50"></div>
-              </button>
+              <AddToCartButton product={product} />
               <button className="w-full sm:w-auto bg-white/40 border border-white/60 shadow-sm text-slate-700 font-bold text-lg py-5 px-10 rounded-2xl hover:bg-white/80 hover:border-white transition-all duration-300 flex items-center justify-center gap-3 active:scale-95">
                 <svg className="w-5 h-5 text-[var(--primary-accent)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />

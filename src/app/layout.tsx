@@ -8,6 +8,8 @@ import { Preloader } from "@/components/Preloader";
 import React from "react";
 import Footer from "@/components/Footer";
 import { Analytics } from "@vercel/analytics/next"
+import { CartProvider } from "@/context/CartContext";
+import { CartDrawer } from "@/components/CartDrawer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -100,13 +102,16 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Preloader />
-        <Header />
-        <GradientMesh />
-        <CustomCursor />
-        {children}
-        <Analytics />
-        <Footer />
+        <CartProvider>
+          <CartDrawer />
+          <Preloader />
+          <Header />
+          <GradientMesh />
+          <CustomCursor />
+          {children}
+          <Analytics />
+          <Footer />
+        </CartProvider>
       </body>
     </html>
   );

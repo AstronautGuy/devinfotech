@@ -2,12 +2,31 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { Menu, X } from "lucide-react";
+import { Menu, X, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { TextScramble } from "@/components/TextScramble";
 import { useRouter, usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { useCart } from "@/context/CartContext";
+
+const CartNavButton = ({ className }: { className?: string }) => {
+  const { itemCount, setIsCartOpen } = useCart();
+  return (
+    <button 
+      onClick={() => setIsCartOpen(true)}
+      className={cn("relative p-2 text-slate-600 hover:text-slate-900 transition-colors", className)}
+    >
+      <ShoppingCart className="w-6 h-6" />
+      {itemCount > 0 && (
+        <span className="absolute top-0 right-0 translate-x-1/2 -translate-y-1/2 bg-[var(--primary-accent)] text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full shadow-md">
+          {itemCount}
+        </span>
+      )}
+    </button>
+  );
+};
+
 
 
 const menuItems = [
@@ -103,14 +122,17 @@ const Header = () => {
                 <Logo />
               </Link>
 
-              <button
-                onClick={() => setMenuState(!menuState)}
-                aria-label={menuState ? "Close Menu" : "Open Menu"}
-                className="relative z-20 -m-2.5 -mr-4 block cursor-pointer p-2.5 lg:hidden"
-              >
-                <Menu className="group-data-[state=active]:rotate-180 m-auto size-6 duration-200" />
-                <X className="absolute inset-0 m-auto size-6 -rotate-180 scale-0 opacity-0 duration-200 group-data-[state=active]:scale-100 group-data-[state=active]:opacity-100" />
-              </button>
+              <div className="flex items-center gap-2 lg:gap-0">
+                <CartNavButton className="lg:hidden" />
+                <button
+                  onClick={() => setMenuState(!menuState)}
+                  aria-label={menuState ? "Close Menu" : "Open Menu"}
+                  className="relative z-20 -m-2.5 -mr-4 block cursor-pointer p-2.5 lg:hidden"
+                >
+                  <Menu className="group-data-[state=active]:rotate-180 m-auto size-6 duration-200" />
+                  <X className="absolute inset-0 m-auto size-6 -rotate-180 scale-0 opacity-0 duration-200 group-data-[state=active]:scale-100 group-data-[state=active]:opacity-100" />
+                </button>
+              </div>
             </div>
 
             {/* Desktop menu */}
@@ -152,7 +174,8 @@ const Header = () => {
                 </ul>
               </div>
 
-              <div className="flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
+              <div className="flex w-full flex-col space-y-3 sm:flex-row sm:gap-4 sm:space-y-0 md:w-fit items-center">
+                <CartNavButton className="hidden lg:flex" />
                 {/* Login / Dashboard / Admin */}
                 <Button
                   asChild
