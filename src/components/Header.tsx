@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 import { TextScramble } from "@/components/TextScramble";
 import { useRouter, usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { User } from "@supabase/supabase-js";
+
 
 const menuItems = [
   { name: "Services", href: "/services" },

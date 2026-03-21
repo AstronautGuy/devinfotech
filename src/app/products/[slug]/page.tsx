@@ -1,7 +1,7 @@
 import { createClient as createBrowserClient } from "@supabase/supabase-js";
 import { unstable_cache } from "next/cache";
 import { notFound } from "next/navigation";
-import { Metadata, ResolvingMetadata } from "next";
+import { Metadata } from "next";
 import ImageGallery from "./ImageGallery"; 
 
 export const dynamic = 'force-dynamic';

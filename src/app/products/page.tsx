@@ -57,7 +57,7 @@ const getAllCategories = unstable_cache(
        .select("category")
        .not("category", "is", null);
     if (error || !products) return [];
-    const uniqueCategories = Array.from(new Set(products.map((p: any) => p.category).filter(Boolean)));
+    const uniqueCategories = Array.from(new Set(products.map((p: { category: string }) => p.category).filter(Boolean)));
     return uniqueCategories.map((name) => ({ name }));
   },
   ['all-categories-v3'],
