@@ -23,7 +23,7 @@ export async function submitContactForm(formData: FormData) {
   }
 
   try {
-    const { data, error } = await resend.emails.send({
+    const { error } = await resend.emails.send({
       from: "DevInfotech Leads <onboarding@resend.dev>",
       to: ["info@devinfotech.net"], // Target delivery email
       subject: `New Lead: ${subject || "General Inquiry"} - ${name}`,
@@ -36,8 +36,8 @@ export async function submitContactForm(formData: FormData) {
     }
 
     return { success: true };
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("Contact Form Critical Error:", err);
-    return { error: err.message || "Unknown communication failure." };
+    return { error: err instanceof Error ? err.message : "Unknown communication failure." };
   }
 }

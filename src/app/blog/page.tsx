@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { AnimatedReveal } from "@/components/AnimatedReveal";
 import { FloatingBackground } from "@/components/FloatingBackground";
 
@@ -13,9 +14,9 @@ export default function BlogComingSoonPage() {
         <p className="text-xl text-slate-600 max-w-lg mx-auto mb-8">
           We are currently crafting amazing content for our Blog. Stay tuned!
         </p>
-        <a href="/" className="inline-block px-8 py-3 bg-slate-900 text-white rounded-lg font-medium hover:bg-slate-800 transition-colors">
+        <Link href="/" className="inline-block px-8 py-3 bg-slate-900 text-white rounded-lg font-medium hover:bg-slate-800 transition-colors">
           Return Home
-        </a>
+        </Link>
       </AnimatedReveal>
     </div>
   );

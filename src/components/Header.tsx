@@ -25,7 +25,6 @@ const Header = () => {
   const router = useRouter();
   const supabase = createClient();
 
-  const [user, setUser] = useState<User | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -38,7 +37,6 @@ const Header = () => {
       } = await supabase.auth.getSession();
       const currentUser = session?.user ?? null;
 
-      setUser(currentUser);
       setIsLoggedIn(!!currentUser);
       setLoading(false);
     };
@@ -57,10 +55,9 @@ const Header = () => {
     checkAdmin();
 
     // Listen for auth state changes
-    const { data: subscription } = supabase.auth.onAuthStateChange(
+    supabase.auth.onAuthStateChange(
       (_event, session) => {
         const currentUser = session?.user ?? null;
-        setUser(currentUser);
         setIsLoggedIn(!!currentUser);
         setIsAdmin(currentUser?.app_metadata?.role === "ADMIN");
       },
@@ -69,7 +66,6 @@ const Header = () => {
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    setUser(null);
     setIsLoggedIn(false);
     router.push("/auth/login");
   };
@@ -223,7 +219,7 @@ const Header = () => {
   );
 };
 
-const Logo = ({ className }: { className?: string }) => {
+const Logo = () => {
   const pathname = usePathname();
   const isContactPage = pathname === "/contact";
 

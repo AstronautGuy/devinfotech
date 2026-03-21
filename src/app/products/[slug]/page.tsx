@@ -51,8 +51,7 @@ function cleanDescription(html: string | null, maxLength = 160) {
 }
 
 export async function generateMetadata(
-  { params }: ProductPageProps,
-  _parent: ResolvingMetadata,
+  { params }: ProductPageProps
 ): Promise<Metadata> {
   const { slug } = await params;
   const product = await getProduct(slug);

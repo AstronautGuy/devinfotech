@@ -249,36 +249,36 @@ const Footer = () => {
               <h4 className="font-bold text-lg mb-4">Services</h4>
               <ul className="space-y-3">
                 <li>
-                  <a
+                  <Link
                     href="/services/web-development"
                     className="link-underline text-gray-400 hover:text-white transition-colors"
                   >
                     Web Development
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a
+                  <Link
                     href="/services/ui-ux"
                     className="link-underline text-gray-400 hover:text-white transition-colors"
                   >
                     UI/UX Design
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a
+                  <Link
                     href="/services/branding"
                     className="link-underline text-gray-400 hover:text-white transition-colors"
                   >
                     Branding
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a
+                  <Link
                     href="/services/seo-optimization"
                     className="link-underline text-gray-400 hover:text-white transition-colors"
                   >
                     SEO
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>

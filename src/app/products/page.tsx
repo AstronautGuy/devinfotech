@@ -7,13 +7,19 @@ import { getKeywords } from "@/lib/seo";
 import { ProductFilters } from "@/components/ProductFilters";
 import { AnimatedReveal, AnimatedStaggerGroup, AnimatedStaggerItem } from "@/components/AnimatedReveal";
 
-function cleanDescription(html: string | null, maxLength = 160) {
-  if (!html) return "";
-  const text = html.replace(/<[^>]+>/g, " "); // Strip HTML
-  const normalized = text.replace(/\s+/g, " ").trim();
-  return normalized.length > maxLength
-    ? normalized.slice(0, maxLength) + "…"
-    : normalized;
+// Description cleaner removed as it was unused
+interface TagRecord {
+  Tag?: { name: string };
+}
+interface ProductRecord {
+  id: string;
+  name: string;
+  brand?: string;
+  price: number;
+  slug: string;
+  createdAt: string;
+  images?: { url: string }[];
+  _ProductToTag?: TagRecord[];
 }
 
 const getProducts = unstable_cache(
@@ -50,7 +56,7 @@ const getAllTags = unstable_cache(
        .select("name")
        .order("name", { ascending: true });
     if (error) return [];
-    const uniqueTagNames = Array.from(new Set(tags.map((t: any) => t.name)));
+    const uniqueTagNames = Array.from(new Set(tags.map((t: { name: string }) => t.name)));
     return uniqueTagNames.map((name) => ({ name }));
   },
   ['all-tags-v3'],
@@ -77,32 +83,32 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   const q = typeof resolvedSearchParams.q === 'string' ? resolvedSearchParams.q : undefined;
   const sort = typeof resolvedSearchParams.sort === 'string' ? resolvedSearchParams.sort : undefined;
 
-  let products = await getProducts();
+  let products: ProductRecord[] = await getProducts();
 
   if (q) {
     const lowerQ = q.toLowerCase();
-    products = products.filter((p: any) => 
+    products = products.filter((p: ProductRecord) => 
       p.name.toLowerCase().includes(lowerQ) || 
       (p.brand && p.brand.toLowerCase().includes(lowerQ))
     );
   }
 
   if (category) {
-    products = products.filter((p: any) => 
-      p._ProductToTag?.some((pt: any) => pt.Tag?.name === category)
+    products = products.filter((p: ProductRecord) => 
+      p._ProductToTag?.some((pt: TagRecord) => pt.Tag?.name === category)
     );
   }
 
   if (sort === 'price_asc') {
-    products.sort((a: any, b: any) => a.price - b.price);
+    products.sort((a: ProductRecord, b: ProductRecord) => a.price - b.price);
   } else if (sort === 'price_desc') {
-    products.sort((a: any, b: any) => b.price - a.price);
+    products.sort((a: ProductRecord, b: ProductRecord) => b.price - a.price);
   } else if (sort === 'newest') {
-    products.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    products.sort((a: ProductRecord, b: ProductRecord) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
   }
 
   const tags = await getAllTags();
-  const uniqueCategories = tags.map((t: any) => t.name);
+  const uniqueCategories = tags.map((t: { name: string }) => t.name);
 
   return (
     <div className="text-slate-900 min-h-screen relative overflow-hidden">
@@ -177,7 +183,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
             <ProductFilters />
 
             <div className="text-slate-500 text-sm px-2 font-mono tracking-widest uppercase font-bold shadow-none">
-              // {products.length} Node{products.length !== 1 ? 's' : ''} Activated
+              {`// ${products.length} Node${products.length !== 1 ? 's' : ''} Activated`}
             </div>
 
             {products.length === 0 ? (
@@ -189,7 +195,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
               </div>
             ) : (
               <AnimatedStaggerGroup className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
-                {products.map((product: any) => {
+                {products.map((product: ProductRecord) => {
                   const thumbnailUrl = product.images?.[0]?.url;
                   const primaryCategory = product._ProductToTag?.[0]?.Tag?.name || "CORE COMPONENT";
                   

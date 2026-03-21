@@ -37,12 +37,10 @@ function AnimatedCounter({
   value,
   suffix = "",
   prefix = "",
-  duration = 2000,
 }: {
   value: number;
   suffix?: string;
   prefix?: string;
-  duration?: number;
 }) {
   const countRef = useRef(null);
   const isInView = useInView(countRef, { once: true, amount: 0.5 });

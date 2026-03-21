@@ -51,7 +51,7 @@ export function ImageUploader({ value, onChange }: ImageUploaderProps) {
         uploadedUrls.push(url);
       }
       onChange(uploadedUrls);
-    } catch (e) {
+    } catch {
       setUploadError("Some uploads failed. Please verify your bucket is 'Public' on Supabase.");
     } finally {
       setIsUploading(false);
