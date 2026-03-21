@@ -3,6 +3,7 @@ import { createClient as createBrowserClient } from "@supabase/supabase-js";
 import { unstable_cache } from "next/cache";
 import Image from "next/image";
 import { Metadata } from "next";
+export const dynamic = "force-dynamic";
 import { getKeywords } from "@/lib/seo";
 import { ProductFilters } from "@/components/ProductFilters";
 import { AnimatedReveal, AnimatedStaggerGroup, AnimatedStaggerItem } from "@/components/AnimatedReveal";

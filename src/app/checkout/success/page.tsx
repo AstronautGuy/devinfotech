@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import { useCart } from "@/context/CartContext";
 import { useSearchParams, useRouter } from "next/navigation";
 import { CheckCircle2, Package, ArrowRight, Download } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 
-export default function CheckoutSuccessPage() {
+function CheckoutSuccessContent() {
   const { clearCart } = useCart();
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -89,5 +89,13 @@ export default function CheckoutSuccessPage() {
         </div>
       </motion.div>
     </div>
+  );
+}
+
+export default function CheckoutSuccessPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-slate-50 flex items-center justify-center"><div className="w-8 h-8 rounded-full border-4 border-[var(--primary-accent)] border-t-transparent animate-spin"></div></div>}>
+      <CheckoutSuccessContent />
+    </Suspense>
   );
 }

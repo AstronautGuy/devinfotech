@@ -1,0 +1,31 @@
+
+> devinfotech@0.1.0 build E:\Antigravity\devinfotech
+> next build --turbopack
+
+   Γû▓ Next.js 15.5.9 (Turbopack)
+   - Environments: .env
+
+   Creating an optimized production build ...
+ ΓÜá Slow filesystem detected. The benchmark took 118ms. If E:\Antigravity\devinfotech\.next is a network drive, consider moving it to a local folder. If you have an antivirus enabled, consider excluding your project directory.
+ Γ£ô Finished writing to disk in 121ms
+ Γ£ô Compiled successfully in 6.6s
+   Linting and checking validity of types ...
+(node:13332) ESLintIgnoreWarning: The ".eslintignore" file is no longer supported. Switch to using the "ignores" property in "eslint.config.js": https://eslint.org/docs/latest/use/configure/migration-guide#ignoring-files
+(Use `node --trace-warnings ...` to show where the warning was created)
+   Collecting page data ...
+   Generating static pages (0/26) ...
+ Γ¿» useSearchParams() should be wrapped in a suspense boundary at page "/checkout/success". Read more: https://nextjs.org/docs/messages/missing-suspense-with-csr-bailout
+    at g (E:\Antigravity\devinfotech\.next\server\chunks\ssr\4b4c5_next_dist_fbef44ac._.js:4:5015)
+    at m (E:\Antigravity\devinfotech\.next\server\chunks\ssr\4b4c5_next_dist_fbef44ac._.js:4:6648)
+    at m (E:\Antigravity\devinfotech\.next\server\chunks\ssr\_c64d9244._.js:1:1150)
+    at n3 (E:\Antigravity\devinfotech\node_modules\.pnpm\next@15.5.9_react-dom@19.1.0_react@19.1.0__react@19.1.0\node_modules\next\dist\compiled\next-server\app-page-turbo.runtime.prod.js:2:82831)
+    at n6 (E:\Antigravity\devinfotech\node_modules\.pnpm\next@15.5.9_react-dom@19.1.0_react@19.1.0__react@19.1.0\node_modules\next\dist\compiled\next-server\app-page-turbo.runtime.prod.js:2:84601)
+    at n5 (E:\Antigravity\devinfotech\node_modules\.pnpm\next@15.5.9_react-dom@19.1.0_react@19.1.0__react@19.1.0\node_modules\next\dist\compiled\next-server\app-page-turbo.runtime.prod.js:2:104801)
+    at n7 (E:\Antigravity\devinfotech\node_modules\.pnpm\next@15.5.9_react-dom@19.1.0_react@19.1.0__react@19.1.0\node_modules\next\dist\compiled\next-server\app-page-turbo.runtime.prod.js:2:102219)
+    at n8 (E:\Antigravity\devinfotech\node_modules\.pnpm\next@15.5.9_react-dom@19.1.0_react@19.1.0__react@19.1.0\node_modules\next\dist\compiled\next-server\app-page-turbo.runtime.prod.js:2:83183)
+    at n6 (E:\Antigravity\devinfotech\node_modules\.pnpm\next@15.5.9_react-dom@19.1.0_react@19.1.0__react@19.1.0\node_modules\next\dist\compiled\next-server\app-page-turbo.runtime.prod.js:2:84647)
+    at n6 (E:\Antigravity\devinfotech\node_modules\.pnpm\next@15.5.9_react-dom@19.1.0_react@19.1.0__react@19.1.0\node_modules\next\dist\compiled\next-server\app-page-turbo.runtime.prod.js:2:101560)
+Error occurred prerendering page "/checkout/success". Read more: https://nextjs.org/docs/messages/prerender-error
+Export encountered an error on /checkout/success/page: /checkout/success, exiting the build.
+ Γ¿» Next.js build worker exited with code: 1 and signal: null
+ΓÇëELIFECYCLEΓÇë Command failed with exit code 1.
