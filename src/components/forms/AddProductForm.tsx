@@ -183,7 +183,7 @@ export function AddProductForm() {
             htmlFor="tags"
             className="block text-sm font-medium text-gray-700"
           >
-            Meta Tags (comma-separated)
+            Categories / Tags (comma-separated)
           </label>
           <input
             type="text"

@@ -34,14 +34,14 @@ export default function ImageGallery({
   return (
     <div className="flex flex-col gap-4">
       {/* Main Display Image */}
-      <div className="aspect-square w-full overflow-hidden rounded-lg bg-gray-100 relative">
+      <div className="relative w-full h-[350px] md:h-[400px] lg:h-[500px] overflow-hidden rounded-2xl bg-white/50 border border-white/60 shadow-inner group p-6">
         <Image
           src={activeImage}
           alt={`${productName} - Main image`}
           fill
-          style={{ objectFit: "contain" }} // or 'cover' depending on your preference
-          className="transition-opacity duration-300"
-          priority // Prioritize loading of the main image
+          style={{ objectFit: "contain" }}
+          className="transition-transform duration-700 p-6 drop-shadow-md group-hover:scale-[1.03]"
+          priority
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         />
       </div>
@@ -53,12 +53,12 @@ export default function ImageGallery({
             key={image.id || index}
             onClick={() => setActiveImage(image.url)}
             className={`
-              relative aspect-square w-full overflow-hidden rounded-md 
-              focus:outline-none focus:ring-2 focus:ring-offset-2 
+              relative aspect-square w-full overflow-hidden rounded-xl bg-white/50 border border-white/60 shadow-sm
+              focus:outline-none focus:ring-4 focus:ring-[var(--primary-accent)]/20 transition-all duration-300
               ${
                 activeImage === image.url
-                  ? "ring-2 ring-blue-600 ring-offset-2 ring-offset-white"
-                  : "ring-1 ring-gray-200 hover:ring-blue-300"
+                  ? "ring-2 ring-[var(--primary-accent)] border-[var(--primary-accent)]/50 bg-white/80"
+                  : "hover:bg-white/70 hover:border-white hover:shadow-md"
               }
             `}
             aria-label={`View image of ${productName}`}

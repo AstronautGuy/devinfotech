@@ -7,13 +7,29 @@ import { Mail, Phone, MapPin, Send, CheckCircle2 } from "lucide-react";
 export default function ContactPage() {
   const [formStatus, setFormStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
 
-  const handleFormSubmit = (e: React.FormEvent) => {
+  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setFormStatus("sending");
-    setTimeout(() => {
-      setFormStatus("success");
+    
+    try {
+      const { submitContactForm } = await import("@/actions/ContactAction");
+      const formData = new FormData(e.currentTarget);
+      
+      const result = await submitContactForm(formData);
+      
+      if (result?.error) {
+        setFormStatus("error");
+        alert(result.error);
+      } else {
+        setFormStatus("success");
+        e.currentTarget.reset();
+      }
+    } catch (err) {
+      console.error(err);
+      setFormStatus("error");
+    } finally {
       setTimeout(() => setFormStatus("idle"), 5000);
-    }, 2000);
+    }
   };
 
   return (
@@ -97,6 +113,7 @@ export default function ContactPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="relative group">
                   <input
+                    name="name"
                     type="text"
                     required
                     placeholder=" "
@@ -109,6 +126,7 @@ export default function ContactPage() {
 
                 <div className="relative group">
                   <input
+                    name="email"
                     type="email"
                     required
                     placeholder=" "
@@ -122,6 +140,7 @@ export default function ContactPage() {
 
               <div className="relative group">
                 <input
+                  name="subject"
                   type="text"
                   required
                   placeholder=" "
@@ -134,6 +153,7 @@ export default function ContactPage() {
 
               <div className="relative group">
                 <textarea
+                  name="message"
                   required
                   rows={4}
                   placeholder=" "

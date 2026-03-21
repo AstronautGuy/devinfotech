@@ -250,7 +250,7 @@ const Footer = () => {
               <ul className="space-y-3">
                 <li>
                   <a
-                    href="/services/web-dev"
+                    href="/services/web-development"
                     className="link-underline text-gray-400 hover:text-white transition-colors"
                   >
                     Web Development
@@ -274,7 +274,7 @@ const Footer = () => {
                 </li>
                 <li>
                   <a
-                    href="/services/seo"
+                    href="/services/seo-optimization"
                     className="link-underline text-gray-400 hover:text-white transition-colors"
                   >
                     SEO

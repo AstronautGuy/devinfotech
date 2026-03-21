@@ -47,8 +47,56 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Global Sitelinks and Organization Schema
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://devinfotech.net/#organization",
+        "name": "DevInfotech",
+        "url": "https://devinfotech.net",
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "telephone": "+91-9825039020",
+          "contactType": "customer service",
+          "areaServed": "IN",
+          "availableLanguage": ["English", "Hindi", "Gujarati"]
+        },
+        "sameAs": [
+          "https://www.facebook.com/devinfotech",
+          "https://twitter.com/devinfotech",
+          "https://www.linkedin.com/company/devinfotech"
+        ]
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://devinfotech.net/#website",
+        "url": "https://devinfotech.net",
+        "name": "DevInfotech",
+        "publisher": {
+          "@id": "https://devinfotech.net/#organization"
+        },
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": {
+            "@type": "EntryPoint",
+            "urlTemplate": "https://devinfotech.net/products?q={search_term_string}"
+          },
+          "query-input": "required name=search_term_string"
+        }
+      }
+    ]
+  };
+
   return (
     <html lang="en">
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
