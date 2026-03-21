@@ -7,7 +7,7 @@ import { createCheckoutSession, verifyPayment } from "@/actions/CheckoutAction";
 import { ShoppingBag, ShieldCheck } from "lucide-react";
 
 export default function CheckoutPage() {
-  const { cartItems, cartTotal, isCartOpen, setIsCartOpen } = useCart();
+  const { cartItems, cartTotal, setIsCartOpen } = useCart();
   const router = useRouter();
 
   const [loading, setLoading] = useState(false);
@@ -79,7 +79,7 @@ export default function CheckoutPage() {
       theme: {
         color: "#0f172a", // slate-900
       },
-      handler: async function (response: any) {
+      handler: async function (response: { razorpay_order_id: string; razorpay_payment_id: string; razorpay_signature: string }) {
         setLoading(true);
         // Verify Signature
         const verifyRes = await verifyPayment(
@@ -103,8 +103,15 @@ export default function CheckoutPage() {
       },
     };
 
-    const rzp = new (window as any).Razorpay(options);
-    rzp.on("payment.failed", function (response: any) {
+    const RazorpayConstructor = (window as unknown as {
+      Razorpay: new (opts: Record<string, unknown>) => {
+        on: (event: string, handler: (res: { error: { description: string } }) => void) => void;
+        open: () => void;
+      }
+    }).Razorpay;
+    
+    const rzp = new RazorpayConstructor(options as unknown as Record<string, unknown>);
+    rzp.on("payment.failed", function (response: { error: { description: string } }) {
       setErrorMsg(response.error.description);
       setLoading(false);
     });
