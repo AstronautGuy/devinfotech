@@ -104,6 +104,25 @@ export function AddProductForm() {
 
       <div>
         <label
+          htmlFor="category"
+          className="block text-sm font-medium text-gray-700"
+        >
+          Category
+        </label>
+        <input
+          type="text"
+          id="category"
+          name="category"
+          required
+          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+        />
+        {state.errors?.category && (
+          <p className="text-sm text-red-500 mt-1">{state.errors.category[0]}</p>
+        )}
+      </div>
+
+      <div>
+        <label
           htmlFor="price"
           className="block text-sm font-medium text-gray-700"
         >
@@ -183,13 +202,28 @@ export function AddProductForm() {
             htmlFor="tags"
             className="block text-sm font-medium text-gray-700"
           >
-            Categories / Tags (comma-separated)
+            Category (comma-separated)
           </label>
           <input
             type="text"
             id="tags"
             name="tags"
             placeholder="e.g. electronics, audio, headphones"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          />
+        </div>
+        <div>
+          <label
+            htmlFor="metaTags"
+            className="block text-sm font-medium text-gray-700 mt-4"
+          >
+            Meta Tags (SEO Keywords)
+          </label>
+          <input
+            type="text"
+            id="metaTags"
+            name="metaTags"
+            placeholder="e.g. latest laptop, gaming, high performance"
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
           />
         </div>

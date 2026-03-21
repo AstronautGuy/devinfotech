@@ -1,7 +1,7 @@
 // app/admin/products/actions.ts
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import crypto from "crypto"; // Add crypto to generate UUIDs
@@ -18,12 +18,14 @@ const productSchema = z.object({
   brand: z
     .string()
     .min(3, { message: "Brand must be at least 3 characters long." }),
+  category: z.string().optional(),
   price: z.coerce
     .number()
     .positive({ message: "Price must be a positive number." }),
   description: z.string().optional(),
   metaTitle: z.string().optional(),
   metaDescription: z.string().optional(),
+  metaTags: z.string().optional(),
 });
 
 export async function updateProduct(
@@ -39,10 +41,12 @@ export async function updateProduct(
     name: formData.get("name"),
     slug: formData.get("slug"),
     brand: formData.get("brand"),
+    category: formData.get("category"),
     price: formData.get("price"),
     description: formData.get("description"),
     metaTitle: formData.get("metaTitle"),
     metaDescription: formData.get("metaDescription"),
+    metaTags: formData.get("metaTags"),
   });
 
   if (!validatedFields.success) {
@@ -52,7 +56,7 @@ export async function updateProduct(
     };
   }
 
-  const { name, slug, brand, price, description, metaTitle, metaDescription } =
+  const { name, slug, brand, category, price, description, metaTitle, metaDescription, metaTags } =
     validatedFields.data;
   const imageUrls = formData
     .getAll("images")
@@ -78,10 +82,12 @@ export async function updateProduct(
         name,
         slug,
         brand,
+        category,
         price,
         description,
         metaTitle,
         metaDescription,
+        metaTags,
         updatedAt: new Date().toISOString(), // Supabase handles Default manually on update
       })
       .eq("id", productId);
@@ -134,6 +140,7 @@ export async function updateProduct(
     return { message: "Database error: Failed to update product.", errors: {} };
   }
 
+  revalidateTag("products");
   revalidatePath("/admin/products");
   revalidatePath(`/products/${slug}`);
 

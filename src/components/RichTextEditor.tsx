@@ -3,6 +3,8 @@
 
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
+import Link from "@tiptap/extension-link";
+import Underline from "@tiptap/extension-underline";
 import { Toolbar } from "@/components/Toolbar";
 
 // Define the props for the editor component
@@ -24,6 +26,11 @@ export function RichTextEditor({
         // By removing the list items from here, they will use their default, working configuration.
         heading: false,
       }),
+      Link.configure({
+        openOnClick: false,
+        autolink: true,
+      }),
+      Underline,
       // highlight-end
     ],
     content: initialContent || "",

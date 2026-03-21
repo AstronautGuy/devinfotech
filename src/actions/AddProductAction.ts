@@ -2,7 +2,7 @@
 
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { FormState } from "@/lib/definations";
 import { z } from "zod";
@@ -19,12 +19,14 @@ const productSchema = z.object({
   brand: z
     .string()
     .min(3, { message: "brand must be at least 3 characters long." }),
+  category: z.string().optional(),
   price: z.coerce
     .number()
     .positive({ message: "Price must be a positive number." }),
   description: z.string().optional(),
   metaTitle: z.string().optional(),
   metaDescription: z.string().optional(),
+  metaTags: z.string().optional(),
 });
 
 export async function createProduct(
@@ -35,10 +37,12 @@ export async function createProduct(
     name: formData.get("name"),
     slug: formData.get("slug"),
     brand: formData.get("brand"),
+    category: formData.get("category"),
     price: formData.get("price"),
     description: formData.get("description"),
     metaTitle: formData.get("metaTitle"),
     metaDescription: formData.get("metaDescription"),
+    metaTags: formData.get("metaTags"),
   });
 
   if (!validatedFields.success) {
@@ -48,7 +52,7 @@ export async function createProduct(
     };
   }
 
-  const { name, slug, brand, price, description, metaTitle, metaDescription } =
+  const { name, slug, brand, category, price, description, metaTitle, metaDescription, metaTags } =
     validatedFields.data;
 
   const imageUrls = formData
@@ -74,10 +78,12 @@ export async function createProduct(
         name,
         slug,
         brand,
+        category,
         price,
         description,
         metaTitle,
         metaDescription,
+        metaTags,
         updatedAt: new Date().toISOString(), // Add updatedAt manually
       })
       .select("id")
@@ -129,6 +135,7 @@ export async function createProduct(
     return { message: "Database error: Failed to create product.", errors: {} };
   }
 
+  revalidateTag("products");
   revalidatePath("/products");
   redirect(`/products/${slug}`);
 }

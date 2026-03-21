@@ -15,8 +15,10 @@ export interface Database {
           name: string
           slug: string
           brand: string
+          category: string | null
           description: string | null
           price: number
+          metaTags: string | null
           metaTitle: string | null
           metaDescription: string | null
           createdAt: string
@@ -27,8 +29,10 @@ export interface Database {
           name: string
           slug: string
           brand: string
+          category?: string | null
           description?: string | null
           price: number
+          metaTags?: string | null
           metaTitle?: string | null
           metaDescription?: string | null
           createdAt?: string
@@ -39,8 +43,10 @@ export interface Database {
           name?: string
           slug?: string
           brand?: string
+          category?: string | null
           description?: string | null
           price?: number
+          metaTags?: string | null
           metaTitle?: string | null
           metaDescription?: string | null
           createdAt?: string

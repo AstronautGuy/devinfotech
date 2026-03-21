@@ -1,7 +1,7 @@
 // app/admin/products/actions.ts
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 
 export async function deleteProduct(productId: string) {
@@ -16,6 +16,7 @@ export async function deleteProduct(productId: string) {
   }
 
   // Revalidate paths to reflect the change
+  revalidateTag("products");
   revalidatePath("/admin/products");
   revalidatePath("/products");
 }

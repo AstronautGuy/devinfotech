@@ -28,7 +28,7 @@ const getProduct = unstable_cache(
           Tag(id, name)
         )
       `)
-      .eq("slug", slug)
+      .eq("slug", decodeURIComponent(slug))
       .single();
 
     if (error || !data) return null;
@@ -66,7 +66,10 @@ export async function generateMetadata(
   return {
     title: product.metaTitle || product.name,
     description: metaDesc,
-    keywords: product.tags.map((tag: { name: string }) => tag.name),
+    keywords: [
+      ...product.tags.map((tag: { name: string }) => tag.name),
+      ...(product.metaTags ? product.metaTags.split(',').map((t: string) => t.trim()) : [])
+    ],
     openGraph: {
       title: product.metaTitle || product.name,
       description: metaDesc,

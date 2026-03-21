@@ -15,6 +15,7 @@ interface ProductRecord {
   id: string;
   name: string;
   brand?: string;
+  category?: string | null;
   price: number;
   slug: string;
   createdAt: string;
@@ -45,31 +46,31 @@ const getProducts = unstable_cache(
   { revalidate: 3600, tags: ['products'] }
 );
 
-const getAllTags = unstable_cache(
+const getAllCategories = unstable_cache(
   async () => {
     const supabaseAnon = createBrowserClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!
     );
-    const { data: tags, error } = await supabaseAnon
-       .from("Tag")
-       .select("name")
-       .order("name", { ascending: true });
-    if (error) return [];
-    const uniqueTagNames = Array.from(new Set(tags.map((t: { name: string }) => t.name)));
-    return uniqueTagNames.map((name) => ({ name }));
+    const { data: products, error } = await supabaseAnon
+       .from("Product")
+       .select("category")
+       .not("category", "is", null);
+    if (error || !products) return [];
+    const uniqueCategories = Array.from(new Set(products.map((p: any) => p.category).filter(Boolean)));
+    return uniqueCategories.map((name) => ({ name }));
   },
-  ['all-tags-v3'],
-  { revalidate: 3600, tags: ['tags'] }
+  ['all-categories-v3'],
+  { revalidate: 3600, tags: ['products'] }
 );
 
 export async function generateMetadata(): Promise<Metadata> {
-  const tags = await getAllTags();
-  const tagKeywords = tags.map((tag: { name: string }) => tag.name);
+  const categoriesDb = await getAllCategories();
+  const categoryKeywords = categoriesDb.map((cat: { name: string }) => cat.name);
   return {
     title: "Our Arsenal | DevInfotech IT Supplies",
     description: "Browse our complete catalog of high-quality IT hardware, laptop peripherals, and enterprise solutions in Vadodara.",
-    keywords: getKeywords([...tagKeywords, "it hardware", "computer sale", "laptops Vadodara"]),
+    keywords: getKeywords([...categoryKeywords, "it hardware", "computer sale", "laptops Vadodara"]),
   };
 }
 
@@ -95,7 +96,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
 
   if (category) {
     products = products.filter((p: ProductRecord) => 
-      p._ProductToTag?.some((pt: TagRecord) => pt.Tag?.name === category)
+      p.category === category
     );
   }
 
@@ -107,8 +108,8 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
     products.sort((a: ProductRecord, b: ProductRecord) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
   }
 
-  const tags = await getAllTags();
-  const uniqueCategories = tags.map((t: { name: string }) => t.name);
+  const categoriesDb = await getAllCategories();
+  const uniqueCategories = categoriesDb.map((t: { name: string }) => t.name);
 
   return (
     <div className="text-slate-900 min-h-screen relative overflow-hidden">
@@ -197,7 +198,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
               <AnimatedStaggerGroup className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
                 {products.map((product: ProductRecord) => {
                   const thumbnailUrl = product.images?.[0]?.url;
-                  const primaryCategory = product._ProductToTag?.[0]?.Tag?.name || "CORE COMPONENT";
+                  const primaryCategory = product.category || "CORE COMPONENT";
                   
                   return (
                     <AnimatedStaggerItem key={product.id}>
