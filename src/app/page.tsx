@@ -92,7 +92,7 @@ export async function generateMetadata(): Promise<Metadata> {
     keywords,
     authors: [{ name: "DevInfotech" }],
     robots: "index, follow",
-    alternates: { canonical: "https://devinfotech.net/products" },
+    alternates: { canonical: "https://www.devinfotech.net/products" },
   };
 }
 

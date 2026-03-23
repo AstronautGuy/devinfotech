@@ -2,6 +2,7 @@
 
 import { Resend } from "resend";
 import { createClient } from "@/lib/supabase/server";
+import { verifyTurnstileToken } from "@/actions/turnstile";
 
 const resend = new Resend(process.env.RESEND_API_KEY || "fallback_key_for_build");
 
@@ -13,6 +14,16 @@ export async function submitContactForm(formData: FormData) {
 
   if (!name || !email || !message) {
     return { error: "Missing required fields" };
+  }
+
+  const turnstileToken = formData.get("cf-turnstile-response") as string;
+  if (!turnstileToken) {
+    return { error: "Please complete the security check" };
+  }
+
+  const turnstileResult = await verifyTurnstileToken(turnstileToken);
+  if (!turnstileResult.success) {
+    return { error: turnstileResult.error || "Failed security check" };
   }
 
   const supabase = await createClient();

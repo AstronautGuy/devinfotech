@@ -14,9 +14,15 @@ import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+<<<<<<< HEAD
 import { useState, useRef } from "react";
 import { Turnstile } from "@marsidev/react-turnstile";
 import type { TurnstileInstance } from "@marsidev/react-turnstile";
+=======
+import { useState } from "react";
+import { Turnstile } from "@marsidev/react-turnstile";
+import { verifyTurnstileToken } from "@/actions/turnstile";
+>>>>>>> 48bfa174b32cae7e06ddc7003cded012b8b0ad30
 
 export function SignUpForm({
   className,
@@ -25,6 +31,7 @@ export function SignUpForm({
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
@@ -45,6 +52,19 @@ export function SignUpForm({
 
     if (password !== repeatPassword) {
       setError("Passwords do not match");
+      setIsLoading(false);
+      return;
+    }
+
+    if (!turnstileToken) {
+      setError("Please complete the security check");
+      setIsLoading(false);
+      return;
+    }
+
+    const turnstileResult = await verifyTurnstileToken(turnstileToken);
+    if (!turnstileResult.success) {
+      setError(turnstileResult.error || "Failed security check");
       setIsLoading(false);
       return;
     }
@@ -117,6 +137,7 @@ export function SignUpForm({
                   onChange={(e) => setRepeatPassword(e.target.value)}
                 />
               </div>
+<<<<<<< HEAD
 
               {process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY && (
                 <div className="flex justify-center my-2 min-h-[65px]">
@@ -130,6 +151,14 @@ export function SignUpForm({
                 </div>
               )}
 
+=======
+              <div className="flex justify-center w-full">
+                <Turnstile
+                  siteKey={process.env.TURNSTILE_SITE_KEY!}
+                  onSuccess={(token) => setTurnstileToken(token)}
+                />
+              </div>
+>>>>>>> 48bfa174b32cae7e06ddc7003cded012b8b0ad30
               {error && <p className="text-sm text-red-500">{error}</p>}
               <Button type="submit" className="w-full" disabled={isLoading}>
                 {isLoading ? "Creating an account..." : "Sign up"}

@@ -22,7 +22,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://devinfotech.net"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://www.devinfotech.net"),
   title: {
     default: "Devinfotech | Web Development & IT Solutions",
     template: "%s | Devinfotech",
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Devinfotech | Web Development & IT Solutions",
     description: "Devinfotech provides cutting-edge web development, IT solutions, and digital transformation services.",
-    url: "https://devinfotech.net",
+    url: "https://www.devinfotech.net",
     siteName: "Devinfotech",
     locale: "en_US",
     type: "website",
@@ -55,9 +55,9 @@ export default function RootLayout({
     "@graph": [
       {
         "@type": "Organization",
-        "@id": "https://devinfotech.net/#organization",
+        "@id": "https://www.devinfotech.net/#organization",
         "name": "DevInfotech",
-        "url": "https://devinfotech.net",
+        "url": "https://www.devinfotech.net",
         "contactPoint": {
           "@type": "ContactPoint",
           "telephone": "+91-9825039020",
@@ -73,17 +73,17 @@ export default function RootLayout({
       },
       {
         "@type": "WebSite",
-        "@id": "https://devinfotech.net/#website",
-        "url": "https://devinfotech.net",
+        "@id": "https://www.devinfotech.net/#website",
+        "url": "https://www.devinfotech.net",
         "name": "DevInfotech",
         "publisher": {
-          "@id": "https://devinfotech.net/#organization"
+          "@id": "https://www.devinfotech.net/#organization"
         },
         "potentialAction": {
           "@type": "SearchAction",
           "target": {
             "@type": "EntryPoint",
-            "urlTemplate": "https://devinfotech.net/products?q={search_term_string}"
+            "urlTemplate": "https://www.devinfotech.net/products?q={search_term_string}"
           },
           "query-input": "required name=search_term_string"
         }
