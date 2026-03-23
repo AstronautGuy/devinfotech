@@ -112,6 +112,16 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   const categoriesDb = await getAllCategories();
   const uniqueCategories = categoriesDb.map((t: { name: string }) => t.name);
 
+  const itemListSchema = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    itemListElement: products.map((product, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      url: `https://devinfotech.net/products/${product.slug}`,
+    })),
+  };
+
   return (
     <div className="text-slate-900 min-h-screen relative overflow-hidden">
       {/* Gentle Ambient Background Orbs */}
@@ -121,6 +131,11 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
       </div>
 
       <div className="relative z-10 container mx-auto px-[5%] pt-40 md:pt-48 pb-24 min-h-screen">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }}
+        />
+
         <AnimatedReveal className="mb-16 lg:mb-24 text-center max-w-3xl mx-auto">
           <h1 className="text-5xl md:text-7xl font-black text-slate-900 tracking-tight mb-6 drop-shadow-sm">
             The <span className="bg-clip-text text-transparent bg-gradient-to-r from-[var(--primary-accent)] to-indigo-500">Devfinity</span> Arsenal
