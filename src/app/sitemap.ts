@@ -5,7 +5,7 @@ import { servicesData } from '@/lib/servicesData';
 export const revalidate = 86400; // Cache sitemap for 24 hours
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://devinfotech.net';
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.devinfotech.net';
 
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,

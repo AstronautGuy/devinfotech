@@ -118,7 +118,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
     itemListElement: products.map((product, index) => ({
       "@type": "ListItem",
       position: index + 1,
-      url: `https://devinfotech.net/products/${product.slug}`,
+      url: `https://www.devinfotech.net/products/${product.slug}`,
     })),
   };
 

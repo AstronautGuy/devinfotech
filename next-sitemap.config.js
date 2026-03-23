@@ -1,6 +1,6 @@
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
-  siteUrl: "https://devinfotech.net", // your domain
+  siteUrl: "https://www.devinfotech.net", // your domain
   generateRobotsTxt: true, // auto-generate robots.txt
   changefreq: "daily",
   priority: 0.7,

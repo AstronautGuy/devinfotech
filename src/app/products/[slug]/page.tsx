@@ -75,7 +75,7 @@ export async function generateMetadata(
       title: product.metaTitle || product.name,
       description: metaDesc,
       images: product.images?.map((img: { url: string }) => ({ url: img.url })) || [],
-      url: `https://devinfotech.net/products/${product.slug}`,
+      url: `https://www.devinfotech.net/products/${product.slug}`,
       type: "website", 
     },
     twitter: {
@@ -85,7 +85,7 @@ export async function generateMetadata(
       images: product.images?.map((img: { url: string }) => img.url) || [],
     },
     alternates: {
-      canonical: `https://devinfotech.net/products/${product.slug}`,
+      canonical: `https://www.devinfotech.net/products/${product.slug}`,
     },
   };
 }
@@ -134,7 +134,7 @@ export default async function ProductPage({
     ],
     offers: {
       "@type": "Offer",
-      url: `https://devinfotech.net/products/${product.slug}`,
+      url: `https://www.devinfotech.net/products/${product.slug}`,
       priceCurrency: "INR",
       price: product.price.toFixed(2),
       priceValidUntil: new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split('T')[0],
@@ -144,7 +144,7 @@ export default async function ProductPage({
         "@type": "Organization",
         name: "Devinfotech",
         email: "info@devinfotech.net",
-        url: "https://devinfotech.net",
+        url: "https://www.devinfotech.net",
       },
       hasMerchantReturnPolicy: {
         "@type": "MerchantReturnPolicy",
