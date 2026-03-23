@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Mail, Phone, MapPin, Send, CheckCircle2 } from "lucide-react";
+import { Turnstile } from "@marsidev/react-turnstile";
 
 export default function ContactPage() {
   const [formStatus, setFormStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
@@ -164,6 +165,10 @@ export default function ContactPage() {
                 <label className="absolute left-0 -top-4 text-slate-400 text-xs transition-all duration-300 peer-placeholder-shown:text-base peer-placeholder-shown:top-2 peer-focus:-top-4 peer-focus:text-xs peer-focus:text-[var(--primary-accent)] cursor-text">
                   Message Details
                 </label>
+              </div>
+
+              <div className="pt-2 flex justify-center w-full">
+                <Turnstile siteKey={process.env.TURNSTILE_SITE_KEY!} />
               </div>
 
               <div className="pt-4">

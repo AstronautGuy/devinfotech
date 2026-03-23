@@ -14,12 +14,15 @@ import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import Link from "next/link";
 import { useState } from "react";
+import { Turnstile } from "@marsidev/react-turnstile";
+import { verifyTurnstileToken } from "@/actions/turnstile";
 
 export function ForgotPasswordForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
   const [email, setEmail] = useState("");
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -29,6 +32,19 @@ export function ForgotPasswordForm({
     const supabase = createClient();
     setIsLoading(true);
     setError(null);
+
+    if (!turnstileToken) {
+      setError("Please complete the security check");
+      setIsLoading(false);
+      return;
+    }
+
+    const turnstileResult = await verifyTurnstileToken(turnstileToken);
+    if (!turnstileResult.success) {
+      setError(turnstileResult.error || "Failed security check");
+      setIsLoading(false);
+      return;
+    }
 
     try {
       // The url which will be included in the email. This URL needs to be configured in your redirect URLs in the Supabase dashboard at https://supabase.com/dashboard/project/_/auth/url-configuration
@@ -80,6 +96,12 @@ export function ForgotPasswordForm({
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                  />
+                </div>
+                <div className="flex justify-center w-full">
+                  <Turnstile
+                    siteKey={process.env.TURNSTILE_SITE_KEY!}
+                    onSuccess={(token) => setTurnstileToken(token)}
                   />
                 </div>
                 {error && <p className="text-sm text-red-500">{error}</p>}

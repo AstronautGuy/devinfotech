@@ -14,12 +14,15 @@ import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { Turnstile } from "@marsidev/react-turnstile";
+import { verifyTurnstileToken } from "@/actions/turnstile";
 
 export function UpdatePasswordForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
   const [password, setPassword] = useState("");
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
@@ -29,6 +32,19 @@ export function UpdatePasswordForm({
     const supabase = createClient();
     setIsLoading(true);
     setError(null);
+
+    if (!turnstileToken) {
+      setError("Please complete the security check");
+      setIsLoading(false);
+      return;
+    }
+
+    const turnstileResult = await verifyTurnstileToken(turnstileToken);
+    if (!turnstileResult.success) {
+      setError(turnstileResult.error || "Failed security check");
+      setIsLoading(false);
+      return;
+    }
 
     try {
       const { error } = await supabase.auth.updateUser({ password });
@@ -63,6 +79,12 @@ export function UpdatePasswordForm({
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                />
+              </div>
+              <div className="flex justify-center w-full">
+                <Turnstile
+                  siteKey={process.env.TURNSTILE_SITE_KEY!}
+                  onSuccess={(token) => setTurnstileToken(token)}
                 />
               </div>
               {error && <p className="text-sm text-red-500">{error}</p>}
