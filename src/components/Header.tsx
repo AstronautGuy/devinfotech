@@ -2,13 +2,14 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { Menu, X, ShoppingCart } from "lucide-react";
+import { Menu, X, ShoppingCart, MousePointer2, Mouse } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { TextScramble } from "@/components/TextScramble";
 import { useRouter, usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useCart } from "@/context/CartContext";
+import { useCursor } from "@/context/CursorContext";
 
 const CartNavButton = ({ className }: { className?: string }) => {
   const { itemCount, setIsCartOpen } = useCart();
@@ -27,7 +28,24 @@ const CartNavButton = ({ className }: { className?: string }) => {
   );
 };
 
-
+const CursorNavButton = ({ className }: { className?: string }) => {
+  const { useCustomCursor, toggleCursor, mounted } = useCursor();
+  
+  if (!mounted) {
+    return <div className={cn("w-10 h-10 block", className)} />;
+  }
+  
+  return (
+    <button 
+      onClick={toggleCursor}
+      aria-label="Toggle Custom Cursor"
+      title={useCustomCursor ? "Switch to Normal Cursor" : "Switch to Animated Cursor"}
+      className={cn("relative p-2 text-slate-600 hover:text-slate-900 transition-colors", className)}
+    >
+      {useCustomCursor ? <MousePointer2 className="w-5 h-5" /> : <Mouse className="w-5 h-5" />}
+    </button>
+  );
+};
 
 const menuItems = [
   { name: "Services", href: "/services" },
@@ -123,6 +141,7 @@ const Header = () => {
               </Link>
 
               <div className="flex items-center gap-2 lg:gap-0">
+                <CursorNavButton className="lg:hidden" />
                 <CartNavButton className="lg:hidden" />
                 <button
                   onClick={() => setMenuState(!menuState)}
@@ -175,6 +194,7 @@ const Header = () => {
               </div>
 
               <div className="flex w-full flex-col space-y-3 sm:flex-row sm:gap-4 sm:space-y-0 md:w-fit items-center">
+                <CursorNavButton className="hidden lg:flex" />
                 <CartNavButton className="hidden lg:flex" />
                 {/* Login / Dashboard / Admin */}
                 <Button

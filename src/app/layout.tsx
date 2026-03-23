@@ -10,6 +10,7 @@ import Footer from "@/components/Footer";
 import { Analytics } from "@vercel/analytics/next"
 import { CartProvider } from "@/context/CartContext";
 import { CartDrawer } from "@/components/CartDrawer";
+import { CursorProvider } from "@/context/CursorContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -102,16 +103,18 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <CartProvider>
-          <CartDrawer />
-          <Preloader />
-          <Header />
-          <GradientMesh />
-          <CustomCursor />
-          {children}
-          <Analytics />
-          <Footer />
-        </CartProvider>
+        <CursorProvider>
+          <CartProvider>
+            <CartDrawer />
+            <Preloader />
+            <Header />
+            <GradientMesh />
+            <CustomCursor />
+            {children}
+            <Analytics />
+            <Footer />
+          </CartProvider>
+        </CursorProvider>
       </body>
     </html>
   );

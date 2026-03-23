@@ -2,8 +2,10 @@
 
 import React, { useEffect, useState } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
+import { useCursor } from "@/context/CursorContext";
 
 export function CustomCursor() {
+  const { useCustomCursor } = useCursor();
   const [isHovered, setIsHovered] = useState(false);
   const [mounted, setMounted] = useState(false);
 
@@ -53,7 +55,7 @@ export function CustomCursor() {
     };
   }, [mouseX, mouseY]);
 
-  if (!mounted) return null;
+  if (!mounted || !useCustomCursor) return null;
 
   return (
     <>
